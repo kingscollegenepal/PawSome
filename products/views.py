@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render, get_object_or_404
+from products.models import ProductModel
 
-# Create your views here.
+def showdata(request):
+    results=ProductModel.objects.all()
+    return render(request, 'index.html',{"data":results})

@@ -2,7 +2,7 @@
 <head>
     <title>Fetch Data From Database</title>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/styles.css' %}">
 </head>
 <body>
     <centre>
@@ -26,6 +26,7 @@
                 <td>{{results.pet_type}}</td>
                 <td>{{results.product_brand}}</td>
                 <td>{{results.product_picture}}</td>
+                <td><img src={{results.product_picture.url}} alt={{results.product_name}} style="width:500px;height:600px;"></td>
             </tr>
             {% endfor %}
         </table>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<head>
+    <title>Fetch Data From Database</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static '/cat.css' %}">
+</head>
+<body>
+    <centre>
+        <h1>Cat Care Guide</h1>
+        <hr/>
+        <table boarder = "1">
+            <tr>
+                <th>Guide Title</th>
+                <th>Guide Content</th>
+                <th>Pet Type</th>
+                <th>Image</th>
+            </tr>
+            {% for catresults in data %}
+            <tr>
+                <td>{{catresults.id}}</td>
+                <td>{{catresults.guide_title}}</td>
+                <td>{{catresults.guide_content}}</td>
+                <td>{{catresults.pet_type}}</td>
+                <td>{{catresults.image}}</td>
+                <td><img src={{catresults.image.url}} alt={{catresults.guide_title}} style="width:500px;height:600px;"></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </centre>
+</body>

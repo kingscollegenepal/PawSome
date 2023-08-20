@@ -1,0 +1,23 @@
+
+.master{
+    background-color: #9B7A5D;
+}
+.master .card{
+    border-radius: 1rem;
+}
+.gif-holder{
+    border-radius: 1rem 0 0 1rem;
+}
+.h5-head{
+    letter-spacing: 1px;
+}
+.btn-custom{
+    background:rgb(47, 122, 187);
+}
+.btn-custom:hover{
+    background: #9B7A5D;
+}
+.logo img {
+    max-height: 100px;
+    width: auto;
+}

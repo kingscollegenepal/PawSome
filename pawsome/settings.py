@@ -34,11 +34,13 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
+    'crispy_forms',
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'products.apps.ProductsConfig'
+    'products.apps.ProductsConfig',
+    'register.apps.RegisterConfig',
 ]
 
 MIDDLEWARE = [
@@ -136,8 +138,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'pawsome/static/'),
         os.path.join(BASE_DIR, 'media/'),
-
 ]
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

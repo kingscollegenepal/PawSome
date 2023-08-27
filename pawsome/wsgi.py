@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD
 WSGI config for pawsome project.
+=======
+WSGI config for dj_shop project.
+>>>>>>> bb75f3e (login and home page)
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

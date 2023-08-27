@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD
 ASGI config for pawsome project.
+=======
+ASGI config for dj_shop project.
+>>>>>>> bb75f3e (login and home page)
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

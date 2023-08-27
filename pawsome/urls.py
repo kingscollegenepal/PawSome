@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD
 URL configuration for pawsome project.
+=======
+URL configuration for dj_shop project.
+>>>>>>> bb75f3e (login and home page)
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -16,6 +20,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+<<<<<<< HEAD
 from django.conf.urls.static import static
 from django.conf import settings
 from products import productsviews
@@ -29,3 +34,19 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+=======
+from turtle import settiltangle
+from django.conf import settings
+from django.conf.urls.static import static
+from store import views
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path('register', include("register.urls")),
+    path('', include("login.urls")),
+    path('logout/', include("login.urls")),
+    path('', include("store.urls")),
+]
+
+urlpatterns += static (settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+>>>>>>> bb75f3e (login and home page)

@@ -43,4 +43,37 @@ class CartItem(models.Model):
     def price(self):
         new_price = self.product.price * self.quantity
         return new_price
+
+ORDER_STATUS = (
+    ("Order Received", "Order Received"),
+    ("Order Processing", "Order Processing"),
+    ("On the way", "On the way"),
+    ("Order Completed", "Order Completed"),
+    ("Order Canceled", "Order Canceled"),
+)
+
+METHOD = (
+    ("Cash On Delivery", "Cash On Delivery"),
+    ("Khalti", "Khalti"),
+)
+
+class Order(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
+    ordered_by = models.CharField(max_length=200)
+    shipping_address = models.CharField(max_length=200)
+    mobile = models.CharField(max_length=10)
+    email = models.EmailField(null=True,blank=True)
+    subtotal = models.PositiveIntegerField(default=False, blank=True)
+    discount = models.PositiveIntegerField(default=False, blank=True)
+    total = models.PositiveIntegerField(default=False, blank=True)
+    order_status = models.CharField(max_length=50, choices=ORDER_STATUS)
+    created_at = models.DateTimeField(auto_now_add=True)
+    payment_method = models.CharField(
+        max_length=20, choices=METHOD, default="Cash On Delivery")
+    payment_completed = models.BooleanField(
+        default=False, null=True, blank=True)
+    
+    def __str__(self):
+        return "Order: " + str(self.id)
     

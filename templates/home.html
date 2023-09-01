@@ -23,15 +23,28 @@
                 <p>{{product.name}}</p>
 
                 <p>${{product.price}}</p>
-    
+                
+                {% if request.user.is_authenticated %} 
                 <button value="{{product.id}}">Add to Cart</button>
+                {% else %}
+                <h3><a href="{% url 'login' %}" style="background-color: #6050DC;
+                        width: 200px;
+                        /* height: auto; */
+                        padding: 10px 60px 5px 60px;
+                        color: white;
+                        border: none;
+                        font-size: 16px;
+                        cursor: pointer;
+                        border-radius: 5px;
+                        margin: auto;">Add to Cart</a></h3>
+                {% endif %}
 
             </div>
            
-
         </div> 
         
         {% endfor %}
+
     </div>
 
 {% endblock content %}

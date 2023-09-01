@@ -1,8 +1,15 @@
 from django.shortcuts import render, redirect
-from store.models import Product, Cart, CartItem
+from django.views.generic import View, TemplateView, CreateView, FormView, DetailView, ListView
+from store.models import Product, Cart, CartItem, Order
 from django.http import JsonResponse
 import json
 from django.contrib import messages
+from django.urls import reverse_lazy, reverse
+from .forms import CheckoutForm
+from django.http import HttpResponseRedirect
+import requests
+
+
 
 # pylint: disable=missing-function-docstring
 def home(request):
@@ -49,10 +56,78 @@ def add_to_cart(request):
 
     return JsonResponse(num_of_item, safe=False) 
 
+def checkout(request):
+    cart = None
+    cartitems = []
+    form = CheckoutForm()
 
-def confirm_payment(request, pk):
-    cart = Cart.objects.get(id=pk)
-    cart.completed = True
-    cart.save()
-    messages.success(request, "Payment made successfully")
-    return redirect("home")
+    if request.user.is_authenticated:
+        cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
+        cartitems = cart.cartitems.all()
+
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            if cart:  # Using the cart object directly
+                # Initialize a new Order model object or get the existing object you want to update
+                order = form.save(commit=False)
+                
+                order.total= cart.total_price
+                order.cart = cart
+                ## order.total = cart.total  # Assuming `total` is a field in your Cart model
+                order.order_status = "Order Received"
+                pm = form.cleaned_data.get("payment_method")
+                
+                # Save the form and the order object to the database
+                order.save()
+
+                # Mark the cart as completed
+                cart.completed = True
+                cart.save()
+                if pm == "Khalti":
+                    return redirect(reverse("khaltirequest") + "?o_id=" + str(order.id))
+            else:
+                return HttpResponseRedirect(reverse_lazy("home"))
+
+    context = {"form": form, "cart": cart, "items": cartitems}
+    return render(request, "checkout.html", context)
+
+class KhaltiRequestView(View):
+    def get(self, request, *args, **kwargs):
+        o_id = request.GET.get("o_id")
+        order = Order.objects.get(id=o_id)
+        context = {
+            "order": order
+        }
+        return render(request, "khaltirequest.html", context)
+    
+class KhaltiVerifyView(View):
+    def get(self, request, *args, **kwargs):
+        token = request.GET.get("token")
+        amount = request.GET.get("amount")
+        o_id = request.GET.get("order_id")
+        print(token, amount, o_id)
+
+        url = "https://khalti.com/api/v2/payment/verify/"
+        payload = {
+            "token": token,
+            "amount": amount
+        }
+        headers = {
+            "Authorization": "Key test_secret_key_de7c8744c0ed419593bcde4a8c6ddd1c"
+        }
+
+        order_obj = Order.objects.get(id=o_id)
+
+        response = requests.post(url, payload, headers=headers)
+        resp_dict = response.json()
+        if resp_dict.get("idx"):
+            success = True
+            order_obj.payment_completed = True
+            order_obj.save()
+        else:
+            success = False
+        data = {
+            "success": success
+        }
+        return JsonResponse(data)

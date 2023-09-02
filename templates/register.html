@@ -34,7 +34,7 @@
           <div style="font-size:12px;color:red;">{{ form.password2.errors }}</div>
         </div>
         <input id="button" type="submit" value="Submit" />
-        <p>Already have an account?  <a href="/" style="color:#3498db;">Login Here</a></p>
+        <p>Already have an account?  <a href="{% url 'login' %}" style="color:#3498db;">Login Here</a></p>
       </form>
     </div>
   </body>

@@ -56,6 +56,53 @@ def add_to_cart(request):
 
     return JsonResponse(num_of_item, safe=False) 
 
+
+class ManageCartView(View):
+    def get(self, request, *args, **kwargs):
+        print("This is manage cart section")
+        item_id = self.kwargs["item_id"]
+        action=request.GET.get("action")
+        item_obj=CartItem.objects.get(id=item_id)
+        cart_item=item_obj.cart
+        print(item_id, action)
+
+        if action=="inc":
+            item_obj.quantity += 1
+            item_obj.save()
+            updated_cart_total = cart_item.total_price
+            print("Updated Cart Total:", updated_cart_total)
+
+        elif action=="dcr":
+            item_obj.quantity -= 1
+            item_obj.save()
+            updated_cart_total = cart_item.total_price
+            print("Updated Cart Total:", updated_cart_total)
+            if item_obj.quantity == 0:
+                item_obj.delete()
+
+        elif action=="rmv":
+            item_obj.delete()
+
+        return redirect("cart")
+
+class CustomerProfileView(TemplateView):
+    template_name = "customerprofile.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        customer = self.request.user
+        context['customer'] = customer
+        orders = Order.objects.filter(cart__user=customer).order_by("-created_at")
+        context['orders']=orders
+        return context
+
+class CustomerOrderDetailView(DetailView):
+    template_name = "customerorderdetail.html"
+    model = Order
+    context_object_name = "ord_obj"
+
+
+
 def checkout(request):
     cart = None
     cartitems = []

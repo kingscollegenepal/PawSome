@@ -8,3 +8,4 @@ class CheckoutForm(forms.ModelForm):
         model = Order
         fields = ["ordered_by", "shipping_address",
                   "mobile", "email", "payment_method"]
+        

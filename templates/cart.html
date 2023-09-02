@@ -1,5 +1,7 @@
 {% extends 'base.html' %} {% block content %}
 
+{% load humanize %}
+
 <div class="shoppingCart"></div>
  <h2>My Cart</h2>
 
@@ -22,15 +24,20 @@
       </div>
 
       <div class="name"><p>{{item.quantity}}</p></div>
-      <div class="name"><p>${{item.product.price}}</p></div>
-      <div class="name"><p>${{item.price}}</p></div>
+      <div class="name"><p>Rs.{{item.product.price | intcomma}}</p></div>
+      <div class="name"><p>Rs.{{item.price | intcomma}}</p></div>
+      <td>
+        <a href="{% url 'managecart' item.id %}?action=inc" class="btn btn-primary"> + </a>
+        <a href="{% url 'managecart' item.id %}?action=dcr" class ="btn btn-warning"> - </a>
+        <a href="{% url 'managecart' item.id %}?action=rmv" class ="btn btn-danger"> x </a>
+      </td>
     </div>
 
     {% endfor %}
   </div>
 
   <div class="pay-section">
-    <h3>Grand-Total: ${{cart.total_price}}</h3>
+    <h3>Grand-Total: Rs.{{cart.total_price | intcomma}}</h3>
     <th><a class="btn btn-info" href="{% url 'checkout' %}"> Checkout </a></th>
   </div>
 </div>

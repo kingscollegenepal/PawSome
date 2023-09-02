@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block title %} Order Detail {% endblock %}
+
+{% block content %}
+
+<div class = "container">
+    <div class = "row">
+        <div class = "col-md-12 mx-auto">
+            <h3>Order Detail</h3><hr>
+            <p><span class="font-weight-bold">Order ID: </span> #ORDER_{{ord_obj.id}}</p>
+            <p><span class="font-weight-bold">Order ID: </span> {{ord_obj.order_status}}</p>
+            <p><span class="font-weight-bold">Ordered On: </span> {{ord_obj.created_at}} ({{ord_obj.created_at | timesince}} ago)</p>
+            <p><span class="font-weight-bold">Customer Information: </span> By {{ord_obj.ordered_by}}, {{ord_obj.email}}</p>
+            <h4>Ordered Items</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Product's Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in ord_obj.cart.cartitems.all %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{item.product.name}}({{item.product.id}})</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.product.price}}</td>
+                        <td>{{item.price}}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <th colspan="4" class="text-right">Total: </th>
+                        <th>Rs. {{ord_obj.cart.total_price | intcomma}}/-</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

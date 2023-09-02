@@ -17,7 +17,7 @@
         {% if user.is_authenticated %}
         <p>Click  <a href="logout/success" style="color:#3498db;">Here</a> to LOGOUT</p>
         {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
-        <p>Click  <a href="/" style="color:#3498db;">Here</a> to LOGIN</p>
+        <p>Click  <a href="{% url 'login' %}" style="color:#3498db;">Here</a> to LOGIN</p>
         {% endif %}
         {% endfor %}
       </form>

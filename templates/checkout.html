@@ -1,15 +1,18 @@
 {% extends 'base.html' %}
 
+{% load humanize %}
+
 {% block title %}Checkout {% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-7">
             <h3>Items in the cart</h3>
             <table class="table">
                 <thead>
                     <tr>
+                        <th>SN</th>
                         <th>Product's Name</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
@@ -19,20 +22,21 @@
                 <tbody>
                     {% for item in items %}
                     <tr>
+                        <td>{{forloop.counter}}</td>
                         <td>{{item.product.name}}</td>
                         <td>{{item.quantity}}</td>
-                        <td>{{item.product.price}}</td>
-                        <td>{{item.price}}</td>
+                        <td>{{item.product.price | intcomma}}</td>
+                        <td>{{item.price | intcomma}}</td>
                     </tr>
                     {% endfor %}
                     <tr>
                         <th colspan="4" class="text-right">Total</th>
-                        <th>$ {{cart.total_price}}</th>
+                        <th>Rs. {{cart.total_price | intcomma}}</th>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
             <h3>Checkout Form</h3>
             <form action="" method="POST">
                 {% csrf_token %}

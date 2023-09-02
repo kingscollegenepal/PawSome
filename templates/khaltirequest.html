@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 
+{% load humanize %}
+
 {% block content %}
 <html>
 <head>
     <script src="https://unpkg.com/khalti-checkout-web@latest/dist/khalti-checkout.iffe.js"></script>
 </head>
 <body>
-    <h3>Your order amount is $ {{order.total}}</h3>
+    <h3>Your order amount is $ {{order.total | intcomma}}</h3>
     
     <button id="payment-button">Pay with Khalti</button>
     <a href="/">Go to Home page</a>

@@ -2,7 +2,7 @@ from django.shortcuts import render , redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.forms import UserCreationForm
-from .forms import registrationform 
+from .forms import registrationform
 
 # Create your views here.
 def register(request):
@@ -20,4 +20,8 @@ def register(request):
     else:
         form = registrationform()
     return render(request, 'register.html', {'form':form})
+
+def logout(request):
+    auth.logout(request)
+    return redirect('/')
 

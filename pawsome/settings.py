@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.humanize",
     "django.contrib.staticfiles",
     'store',
     'register.apps.RegisterConfig',

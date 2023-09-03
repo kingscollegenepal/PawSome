@@ -1,19 +1,19 @@
-*{
 
-    padding: 0px;
-    margin:0px;
-    box-sizing: border-box;
-    font-family: 'Lato', sans-serif;
-}
 
 /* navbar */
-
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    font-family: 'Quicksand' !important;
+  }
 nav{
     background-color: #6050DC;
     color: white;
+    padding: 2em 1em;
     width: 100%;
     height: 80px;
-    padding: 0px 10px 0px 10px;
     display:flex;
     align-items: center;
     justify-content: space-between;
@@ -21,32 +21,42 @@ nav{
 }
 
 .logo{
-    width: 100px;
-    height: 60px;
+    width: fit-content;
+    height: 50px;
     /* border: 2px solid white; */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.cart{
-    width: 300px;
-    height: auto;
-    /* border: 2px solid white; */
-    /* padding: 10px 10px 10px 10px; */
+.logo a{
+    font-size: 2rem;
+    transition:  all 0.5s ease-in-out;
+}
+
+.logo a:hover{
+    color:black;
+}
+
+
+.header-menu{
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
+}
+
+.cart{
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
 }
 
 .cart-container{
-    width: 50px;
-    height: 50px;
     /* border: 1px solid white; */
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
 }
 
 .cart-container .cartitems{
@@ -56,6 +66,7 @@ nav{
     background-color: black;
     color: white;
     display: flex;
+    margin-right: 10px;
     align-items: center;
     justify-content: center;
 }
@@ -69,6 +80,26 @@ nav{
     font-size: 20px;
 }
 
+.cart-button{
+    background: black !important;
+    border-color: black !important;
+    border-radius: 20px;
+    transition: all 0.5s ease-in-out;
+}
+
+.cart-button  i , .cart-button p {
+    transition: all 0.5s ease-in-out;
+}
+
+.cart-button:hover{
+    background: white !important;
+    border-color: white !important;
+
+}
+
+.cart-button:hover  i , .cart-button:hover p {
+    color: black;
+}
 /* index page */
 
 .container{
@@ -85,19 +116,7 @@ nav{
     
 }
 
-.productContainer{
-    width: 250px;
-    height: 300px;
-    border: 1px solid #6050DC;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: column;
-    /* align-self: flex-start; */
-    margin-bottom: 20px;
-    margin-right: 20px;
-}
+
 
 .thumbnail{
     width: 100%;
@@ -247,4 +266,8 @@ nav{
     align-items: center;
     justify-content: space-around;
     /* border: 1px solid black */
+}
+
+#num_of_items{
+    margin-bottom: 0 !important;
 }

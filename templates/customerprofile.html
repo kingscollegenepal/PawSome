@@ -6,9 +6,11 @@
 <div class = "container">
     <div class="row">
         <div class="col-md-4">
-            <h3> Detail Information </h3>
-            <p><span class="font-weight-bold">Name: </span> {{customer.username}}</p>
-            <p><span class="font-weight-bold">Email: </span> {{customer.email}}</p>
+            <h3 class="mb-4"> Detail Information </h3>
+            <ul class="list-group">
+                <li class="list-group-item"><span class="font-weight-bold">Name: </span> <span class="font-weight-light">{{customer.username}}</span></li>
+                <li class="list-group-item"><span class="font-weight-bold">Email: </span> <span class="font-weight-light">{{customer.email}}</span></li>
+            </ul>
         </div>
         <div class = "col-md-8">
             <h3> Previous Orders </h3>

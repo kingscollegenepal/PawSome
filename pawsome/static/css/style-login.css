@@ -1,12 +1,8 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
 
-* {
-  box-sizing: border-box;
-}
 
 body {
   background-color: #f9fafb;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Quicksand';
   display: flex;
   align-items: center;
   justify-content: center;

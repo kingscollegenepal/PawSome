@@ -4,50 +4,34 @@
 
 {% block content %}
 
-{% if request.user.is_authenticated %}
-<h3>
-    <a href="{% url 'customerprofile' %}" style="color:#3498db;">My Profile</a> |
-    <a href="logout/success" style="color:#3498db;">Logout</a>
-</h3>
-{%endif%}
-    
-    <div class="container">
-        
-        {% for product in products  %}
 
-        <div class="productContainer">
-            <div class="thumbnail">
-                <img src="{{product.picture.url}}" alt="">
+<div class="container">
+    <div class="row justify-content-center">
+        {% for product in products %}
+        <div class="col-md-3">
+            <div class="productContainer">
+                <div class="card w-full card-product" style="box-shadow:0 0 8px #6050DC">
+                    <img class="card-img-top" src="{{product.picture.url}}" alt="{{product.name}}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{product.name}}</h5>
+                        <p class="card-text">Rs.{{product.price | intcomma}}</p>
+                        {% if request.user.is_authenticated %}
+
+                            <button class="btn btn-primary" value="{{product.id}}" style="background-color: #6050DC">Add to
+                                Cart</button>
+
+                            {% else %}
+                            <h3><a href="{% url 'login' %}" class="btn btn-primary" style="background-color: #6050DC">Add to
+                                    Cart</a></h3>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-
-            <div class="action">
-
-                <p>{{product.name}}</p>
-
-                <p>Rs.{{product.price | intcomma}}</p>
-                
-                {% if request.user.is_authenticated %} 
-                <button value="{{product.id}}">Add to Cart</button>
-                {% else %}
-                <h3><a href="{% url 'login' %}" style="background-color: #6050DC;
-                        width: 200px;
-                        /* height: auto; */
-                        padding: 10px 60px 5px 60px;
-                        color: white;
-                        border: none;
-                        font-size: 16px;
-                        cursor: pointer;
-                        border-radius: 5px;
-                        margin: auto;">Add to Cart</a></h3>
-                {% endif %}
-
-            </div>
-           
-        </div> 
-        
+        </div>
         {% endfor %}
 
     </div>
 
+</div>
+
 {% endblock content %}
-    

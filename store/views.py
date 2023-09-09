@@ -8,7 +8,7 @@ from django.urls import reverse_lazy, reverse
 from .forms import CheckoutForm
 from django.http import HttpResponseRedirect
 import requests
-
+from django.shortcuts import get_object_or_404
 
 
 
@@ -121,11 +121,12 @@ def cat_products(request):
     context = {"products": cat_products}
     return render(request, "cat_products.html", context)
 
-def shop_by_pet(request):
-    return render(request, 'shop_by_pet.html')
-
-def new_pet_parent(request):
-    return render(request, 'new_pet_parent.html')
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    context = {
+        'product': product
+    }
+    return render(request, 'product_detail.html', context)
 
 def checkout(request):
     cart = None

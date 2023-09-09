@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Product Image -->
+            <img src="{{ product.picture.url }}" alt="{{ product.name }}" class="img-fluid">
+        </div>
+        <div class="col-md-6">
+            <!-- Product Details -->
+            <h2>{{ product.name }}</h2>
+            <p><strong>Price:</strong> Rs.{{ product.price }}</p>
+            <p><strong>Size:</strong> {{ product.size }}</p>
+            <p><strong>Description:</strong> {{ product.description }}</p>
+            <p><strong>Ingredients:</strong> {{ product.ingredients }}</p>
+            <p><strong>Directions to Use:</strong> {{ product.direction_to_use }}</p>
+            <p><strong>In Stock:</strong> {{ product.in_stock|yesno:"Yes,No" }}</p>
+
+            <!-- Add to Cart Button -->
+            <div class="productContainer">
+                {% if request.user.is_authenticated %}
+                    <button class="btn btn-primary" value="{{product.id}}" style="background-color: #6050DC">Add to Cart</button>
+                {% else %}
+                    <h3><a href="{% url 'login' %}" class="btn btn-primary" style="background-color: #6050DC">Login to Add to Cart</a></h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

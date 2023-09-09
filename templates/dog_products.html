@@ -9,10 +9,10 @@
         {% for product in products %}
         <div class="col-md-3 mb-4">
             <div class="productContainer">
-                <div class="card w-full card-product product-card" style="box-shadow:0 0 8px #6050DC">
+                <div class="card w-full card-product product-card" style="box-shadow:0 0 8px #6050DC"><a href="{% url 'product_detail' product.id %}">
                     <img class="card-img-top" src="{{product.picture.url}}" alt="{{product.name}}">
                     <div class="card-body">
-                        <h5 class="card-title">{{product.name}}</h5>
+                        <h5 class="card-title">{{ product.name }}</a></h5>
                         <p class="card-text">Rs.{{product.price | intcomma}}</p>
                         {% if request.user.is_authenticated %}
                             <button class="btn btn-primary" value="{{product.id}}" style="background-color: #6050DC">Add to Cart</button>
@@ -20,7 +20,7 @@
                             <h3><a href="{% url 'login' %}" class="btn btn-primary" style="background-color: #6050DC">Add to Cart</a></h3>
                         {% endif %}
                     </div>
-                </div>
+                </div></a>
             </div>
         </div>
         {% endfor %}

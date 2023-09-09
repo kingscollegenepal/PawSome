@@ -8,11 +8,22 @@ class Product(models.Model):
         ('Dog', 'Dog'),
         ('Cat', 'Cat'),
     )
+
+    CATEGORY_SIZE_CHOICES = (
+        ('Small', 'Small'),
+        ('Medium', 'Medium'),
+        ('Large', 'Large'),
+    )
     
     name = models.CharField(max_length=50)
     price = models.IntegerField()
     picture = models.ImageField(upload_to="img", default="")
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='Dog')
+    size = models.CharField(max_length=10, choices=CATEGORY_SIZE_CHOICES, default='Small')
+    description = models.TextField(default="No description available")
+    ingredients = models.TextField(default="No ingredients listed")
+    direction_to_use = models.TextField(default="No direction to use provided")
+    in_stock = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

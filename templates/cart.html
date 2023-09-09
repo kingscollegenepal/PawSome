@@ -1,44 +1,53 @@
-{% extends 'base.html' %} {% block content %}
-
+{% extends 'base.html' %} 
+{% block content %}
 {% load humanize %}
 
-<div class="shoppingCart">
- <h2>My Cart</h2>
+<style>
+  /* Add custom CSS styles here */
+  .checkout-btn:hover {
+    background-color: #4CAF50; /* Change to your desired hover color */
+    border-color: #4CAF50; /* Change to match the background color */
+  }
+</style>
 
-  <div class="heading">
-    <div class="p_name"><h4>Product's Name</h4></div>
-    <div class="name"><h4>Quantity</h4></div>
-    <div class="name"><h4>Unit Price</h4></div>
-    <div class="name"><h4>Price</h4></div>
+<div class="shoppingCart">
+  <h2 class="mb-4">My Cart</h2>
+
+  <div class="heading row font-weight-bold">
+    <div class="col-md-4">Product's Name</div>
+    <div class="col-md-2">Quantity</div>
+    <div class="col-md-2">Unit Price</div>
+    <div class="col-md-2">Price</div>
+    <div class="col-md-2">Actions</div>
   </div>
 
   <div class="itemContainer">
-
     {% for item in items %}
-    <div class="item">
-      <div class="iteminfo">
-        <div class="p_img">
-          <img src="{{item.product.picture.url}}" alt="" />
+    <div class="item row border-bottom py-3">
+      <div class="col-md-4">
+        <div class="iteminfo d-flex">
+          <div class="p_img pr-3">
+            <img src="{{item.product.picture.url}}" alt="" class="img-fluid" />
+          </div>
+          <p>{{item.product.name}}</p>
         </div>
-        <p>{{item.product.name}}</p>
       </div>
 
-      <div class="name"><p>{{item.quantity}}</p></div>
-      <div class="name"><p>Rs.{{item.product.price | intcomma}}</p></div>
-      <div class="name"><p>Rs.{{item.price | intcomma}}</p></div>
-      <td>
-        <a href="{% url 'managecart' item.id %}?action=inc" class="btn btn-primary"> + </a>
-        <a href="{% url 'managecart' item.id %}?action=dcr" class ="btn btn-warning"> - </a>
-        <a href="{% url 'managecart' item.id %}?action=rmv" class ="btn btn-danger"> x </a>
-      </td>
+      <div class="col-md-2"><p>{{item.quantity}}</p></div>
+      <div class="col-md-2"><p>Rs.{{item.product.price | intcomma}}</p></div>
+      <div class="col-md-2"><p>Rs.{{item.price | intcomma}}</p></div>
+      <div class="col-md-2">
+        <a href="{% url 'managecart' item.id %}?action=inc" class="btn btn-primary btn-sm"> + </a>
+        <a href="{% url 'managecart' item.id %}?action=dcr" class="btn btn-warning btn-sm"> - </a>
+        <a href="{% url 'managecart' item.id %}?action=rmv" class="btn btn-danger btn-sm"> x </a>
+      </div>
     </div>
-
     {% endfor %}
   </div>
 
-  <div class="pay-section">
-    <h3>Grand-Total: Rs.{{cart.total_price | intcomma}}</h3>
-    <th><a class="btn btn-info" href="{% url 'checkout' %}"> Checkout </a></th>
+  <div class="pay-section mt-4">
+    <h3 class="font-weight-bold">Grand-Total: Rs.{{cart.total_price | intcomma}}</h3>
+    <a class="btn btn-info checkout-btn" href="{% url 'checkout' %}"> Checkout </a>
   </div>
 </div>
 {% endblock content %}

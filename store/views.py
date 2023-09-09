@@ -11,13 +11,20 @@ import requests
 
 
 
+
 # pylint: disable=missing-function-docstring
 def home(request):
-    products = Product.objects.all()
+    dog_products = Product.objects.filter(category='Dog')
+    cat_products = Product.objects.filter(category='Cat')
+    
+    context = {
+        "dog_products": dog_products,
+        "cat_products": cat_products
+    }
     
     if request.user.is_authenticated:
-        cart, created = Cart.objects.get_or_create(user=request.user, completed = False)
-    context = {"products":products}
+        cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
+        context["cart"] = cart
 
     return render(request, "home.html", context)
 
@@ -102,6 +109,23 @@ class CustomerOrderDetailView(DetailView):
     context_object_name = "ord_obj"
 
 
+def dog_products(request):
+    """Display all dog products."""
+    dog_products = Product.objects.filter(category='Dog')
+    context = {"products": dog_products}
+    return render(request, "dog_products.html", context)
+
+def cat_products(request):
+    """Display all cat products."""
+    cat_products = Product.objects.filter(category='Cat')
+    context = {"products": cat_products}
+    return render(request, "cat_products.html", context)
+
+def shop_by_pet(request):
+    return render(request, 'shop_by_pet.html')
+
+def new_pet_parent(request):
+    return render(request, 'new_pet_parent.html')
 
 def checkout(request):
     cart = None

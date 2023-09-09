@@ -4,9 +4,15 @@ import uuid
    
 # Create your models here.
 class Product(models.Model):
+    CATEGORY_CHOICES = (
+        ('Dog', 'Dog'),
+        ('Cat', 'Cat'),
+    )
+    
     name = models.CharField(max_length=50)
     price = models.IntegerField()
     picture = models.ImageField(upload_to="img", default="")
+    category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='Dog')
 
     def __str__(self):
         return self.name

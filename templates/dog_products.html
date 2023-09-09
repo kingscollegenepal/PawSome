@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+<div class="container">
+    <h2>Dog Products</h2>
+    <div class="row justify-content-center">
+        {% for product in products %}
+        <div class="col-md-3 mb-4">
+            <div class="productContainer">
+                <div class="card w-full card-product product-card" style="box-shadow:0 0 8px #6050DC">
+                    <img class="card-img-top" src="{{product.picture.url}}" alt="{{product.name}}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{product.name}}</h5>
+                        <p class="card-text">Rs.{{product.price | intcomma}}</p>
+                        {% if request.user.is_authenticated %}
+                            <button class="btn btn-primary" value="{{product.id}}" style="background-color: #6050DC">Add to Cart</button>
+                        {% else %}
+                            <h3><a href="{% url 'login' %}" class="btn btn-primary" style="background-color: #6050DC">Add to Cart</a></h3>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

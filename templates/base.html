@@ -66,15 +66,23 @@
             {% else %}
             <a href="{% url 'login' %}">Login</a>
             {% endif %}
-
+            
+            {% if request.user.is_authenticated %}
             <div class="cart">
                 <a href="{% url 'cart' %}" style="color:white; text-decoration:none">
-
                     <button type="button" class="btn btn-primary cart-button">
                         <i class="bi bi-cart"></i> <span class="badge badge-light">
                             <p id="num_of_items">{%if cart.num_of_items %} {{cart.num_of_item}} {%else%} 0 {%endif%}</p>
                         </span>
                     </button>
+                    {% else %}
+                    <a href="{% url 'login' %}" style="color:white; text-decoration:none">
+                        <button type="button" class="btn btn-primary cart-button">
+                            <i class="bi bi-cart"></i> <span class="badge badge-light">
+                                <p id="num_of_items">{%if cart.num_of_items %} {{cart.num_of_item}} {%else%} 0 {%endif%}</p>
+                            </span>
+                        </button>
+                    {% endif %}
                 </a>
             </div>
         </div>

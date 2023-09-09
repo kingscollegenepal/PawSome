@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center mt-5">
+<div class="container mt-5">
+    <h2 class="text-center">Shop By Pet</h2>
+    <div class="row mt-4">
         <div class="col-md-4 text-center">
             <a href="{% url 'dog_products' %}" class="category-link">
-                <h2>Dog</h2>
+                <h4>Dogs</h4>
             </a>
         </div>
-        <div class="col-md-6 text-center">
+        <div class="col-md-4 text-center">
             <a href="{% url 'cat_products' %}" class="category-link">
-                <h2>Cat</h2>
+                <h4>Cats</h4>
             </a>
         </div>
+        <!-- Add more categories as needed -->
     </div>
 </div>
-
 {% endblock content %}
-

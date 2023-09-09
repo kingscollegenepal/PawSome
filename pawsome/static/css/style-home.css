@@ -20,6 +20,21 @@ nav{
 
 }
 
+div.container div.row a.category-link {
+    display: block;
+    padding: 20px;
+    border: 2px solid #6050DC;
+    border-radius: 10px;
+    color: black; /* Initial color set to black */
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+div.container div.row a.category-link:hover {
+    background-color: #6050DC;
+    color: purple; /* Text color on hover is purple */
+}
+
 .logo{
     width: fit-content;
     height: 50px;
@@ -95,6 +110,22 @@ nav{
     background: white !important;
     border-color: white !important;
 
+}
+
+.product-card {
+    transition: transform 0.3s ease-in-out;
+}
+
+.product-card {
+    height: 100%;
+    overflow: hidden;
+}
+
+
+
+.product-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px #6050DC;
 }
 
 .cart-button:hover  i , .cart-button:hover p {

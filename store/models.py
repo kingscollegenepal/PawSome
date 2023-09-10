@@ -14,11 +14,29 @@ class Product(models.Model):
         ('Medium', 'Medium'),
         ('Large', 'Large'),
     )
+
+    SUBCATEGORY_CHOICES = (
+        ('Pens', 'Pens'),
+        ('Beds', 'Beds'),
+        ('Crates', 'Crates'),
+        ('Gates', 'Gates'),
+        ('Cameras', 'Cameras'),
+        ('Treats', 'Treats'),
+        ('Food', 'Food'),
+        ('Bowls & Feeders', 'Bowls & Feeders'),
+        ('Food Storage & Accessories', 'Food Storage & Accessories'),
+        ('Toys', 'Toys'),
+        ('Collar & Leashes', 'Collar & Leashes'),
+        ('Training Aids', 'Training Aids'),
+        ('Vitamins & Supplements', 'Vitamins & Supplements'),
+        ('Grooming Supplies', 'Grooming Supplies'),
+    )
     
     name = models.CharField(max_length=50)
     price = models.IntegerField()
     picture = models.ImageField(upload_to="img", default="")
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='Dog')
+    subcategory = models.CharField(max_length=30, choices=SUBCATEGORY_CHOICES, default='Pens')
     size = models.CharField(max_length=10, choices=CATEGORY_SIZE_CHOICES, default='Small')
     description = models.TextField(default="No description available")
     ingredients = models.TextField(default="No ingredients listed")
@@ -70,7 +88,6 @@ ORDER_STATUS = (
 )
 
 METHOD = (
-    ("Cash On Delivery", "Cash On Delivery"),
     ("Khalti", "Khalti"),
 )
 
@@ -87,7 +104,7 @@ class Order(models.Model):
     order_status = models.CharField(max_length=50, choices=ORDER_STATUS)
     created_at = models.DateTimeField(auto_now_add=True)
     payment_method = models.CharField(
-        max_length=20, choices=METHOD, default="Cash On Delivery")
+        max_length=20, choices=METHOD, default="Khalti")
     payment_completed = models.BooleanField(
         default=False, null=True, blank=True)
     

@@ -5,25 +5,25 @@
 {% block content %}
 <div class="container">
     <h2>Dog Products</h2>
-    <div class="row justify-content-center">
-        {% for product in products %}
-        <div class="col-md-3 mb-4">
-            <div class="productContainer">
-                <div class="card w-full card-product product-card" style="box-shadow:0 0 8px #6050DC"><a href="{% url 'product_detail' product.id %}">
-                    <img class="card-img-top" src="{{product.picture.url}}" alt="{{product.name}}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</a></h5>
-                        <p class="card-text">Rs.{{product.price | intcomma}}</p>
-                        {% if request.user.is_authenticated %}
-                            <button class="btn btn-primary" value="{{product.id}}" style="background-color: #6050DC">Add to Cart</button>
-                        {% else %}
-                            <h3><a href="{% url 'login' %}" class="btn btn-primary" style="background-color: #6050DC">Add to Cart</a></h3>
-                        {% endif %}
-                    </div>
-                </div></a>
-            </div>
-        </div>
-        {% endfor %}
+    
+    <!-- Links to Subcategories -->
+    <div class="subcategories">
+        <ul>
+            <li><a href="{% url 'pens_products' %}">Pens</a></li>
+            <li><a href="{% url 'beds_products' %}">Beds</a></li>
+            <li><a href="{% url 'crates_products' %}">Crates</a></li>
+            <li><a href="{% url 'gates_products' %}">Gates</a></li>
+            <li><a href="{% url 'cameras_products' %}">Cameras</a></li>
+            <li><a href="{% url 'treats_products' %}">Treats</a></li>
+            <li><a href="{% url 'food_products' %}">Food</a></li>
+            <li><a href="{% url 'bowls_feeders_products' %}">Bowls & Feeders</a></li>
+            <li><a href="{% url 'food_storage_accessories_products' %}">Food Storage & Accessories</a></li>
+            <li><a href="{% url 'toys_products' %}">Toys</a></li>
+            <li><a href="{% url 'collar_leashes_products' %}">Collar & Leashes</a></li>
+            <li><a href="{% url 'training_aids_products' %}">Training Aids</a></li>
+            <li><a href="{% url 'vitamins_supplements_products' %}">Vitamins & Supplements</a></li>
+            <li><a href="{% url 'grooming_supplies_products' %}">Grooming Supplies</a></li>
+        </ul>
     </div>
 </div>
 {% endblock content %}

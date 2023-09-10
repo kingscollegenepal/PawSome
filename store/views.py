@@ -112,8 +112,100 @@ class CustomerOrderDetailView(DetailView):
 def dog_products(request):
     """Display all dog products."""
     dog_products = Product.objects.filter(category='Dog')
-    context = {"products": dog_products}
+    subcategories = Product.SUBCATEGORY_CHOICES
+    context = {
+        "products": dog_products,
+        "subcategories": subcategories
+    }
     return render(request, "dog_products.html", context)
+
+def pens_products(request):
+    """Display all dog pen products."""
+    pens_products = Product.objects.filter(category='Dog', subcategory='Pens')
+    context = {"products": pens_products}
+    return render(request, "pens_products.html", context)
+
+def beds_products(request):
+    """Display all dog pen products."""
+    beds_products = Product.objects.filter(category='Dog', subcategory='Beds')
+    context = {"products": beds_products}
+    return render(request, "beds_products.html", context)
+
+
+def crates_products(request):
+    """Display all dog pen products."""
+    crates_products = Product.objects.filter(category='Dog', subcategory='Crates')
+    context = {"products": crates_products}
+    return render(request, "crates_products.html", context)
+
+
+def gates_products(request):
+    """Display all dog pen products."""
+    gates_products = Product.objects.filter(category='Dog', subcategory='Gates')
+    context = {"products": gates_products}
+    return render(request, "gates_products.html", context)
+
+def cameras_products(request):
+    """Display all dog pen products."""
+    cameras_products = Product.objects.filter(category='Dog', subcategory='Cameras')
+    context = {"products": cameras_products}
+    return render(request, "cameras_products.html", context)
+
+def treats_products(request):
+    """Display all dog pen products."""
+    treats_products = Product.objects.filter(category='Dog', subcategory='Treats')
+    context = {"products": treats_products}
+    return render(request, "treats_products.html", context)
+
+def food_products(request):
+    """Display all dog pen products."""
+    food_products = Product.objects.filter(category='Dog', subcategory='Food')
+    context = {"products": food_products}
+    return render(request, "food_products.html", context)
+
+def bowls_feeders_products(request):
+    """Display all dog pen products."""
+    bowls_feeders_products = Product.objects.filter(category='Dog', subcategory='Bowls & Feeders')
+    context = {"products": bowls_feeders_products}
+    return render(request, "bowls_feeders_products.html", context)
+
+def food_storage_accessories_products(request):
+    """Display all dog pen products."""
+    food_storage_accessories_products = Product.objects.filter(category='Dog', subcategory='Food Storage & Accessories')
+    context = {"products": food_storage_accessories_products}
+    return render(request, "food_storage_accessories_products.html", context)
+
+def toys_products(request):
+    """Display all dog pen products."""
+    toys_products = Product.objects.filter(category='Dog', subcategory='Toys')
+    context = {"products": toys_products}
+    return render(request, "toys_products.html", context)
+
+def collar_leashes_products(request):
+    """Display all dog pen products."""
+    collar_leashes_products = Product.objects.filter(category='Dog', subcategory='Collar & Leashes')
+    context = {"products": collar_leashes_products}
+    return render(request, "collar_leashes_products.html", context)
+
+def training_aids_products(request):
+    """Display all dog pen products."""
+    training_aids_products = Product.objects.filter(category='Dog', subcategory='Training Aids')
+    context = {"products": training_aids_products}
+    return render(request, "training_aids_products.html", context)
+
+
+def vitamins_supplements_products(request):
+    """Display all dog pen products."""
+    vitamins_supplements_products = Product.objects.filter(category='Dog', subcategory='Vitamins & Supplements')
+    context = {"products": vitamins_supplements_products}
+    return render(request, "vitamins_supplements_products.html", context)
+
+
+def grooming_supplies_products(request):
+    """Display all dog pen products."""
+    grooming_supplies_products = Product.objects.filter(category='Dog', subcategory='Vitamins & Supplements')
+    context = {"products": grooming_supplies_products}
+    return render(request, "grooming_supplies_products.html", context)
 
 def cat_products(request):
     """Display all cat products."""

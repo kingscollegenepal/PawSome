@@ -29,6 +29,7 @@ urlpatterns = [
     path("dog-products/grooming_supplies_products/", views.grooming_supplies_products, name="grooming_supplies_products"),
     path("cat-products/", views.cat_products, name="cat_products"),
     path('dog-products/<int:product_id>/', views.product_detail, name="product_detail"),
+    path('search/', views.search_results, name='search_results'),
 ]
 
 

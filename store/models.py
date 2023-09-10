@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+from django.db.models import Avg
+from django.core.validators import MinValueValidator, MaxValueValidator
    
 # Create your models here.
 class Product(models.Model):
@@ -43,8 +45,30 @@ class Product(models.Model):
     direction_to_use = models.TextField(default="No direction to use provided")
     in_stock = models.BooleanField(default=True)
 
+    def average_rating(self):
+        total_ratings = self.ratings.all().aggregate(avg=Avg('value'))
+        return total_ratings['avg'] or 0
+
     def __str__(self):
         return self.name
+    
+class Rating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    value = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])  # Assuming a 1-5 rating scale
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name} - {self.value}"
+    
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    review_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name}"
+
 
 class Cart(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)

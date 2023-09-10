@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View, TemplateView, CreateView, FormView, DetailView, ListView
-from store.models import Product, Cart, CartItem, Order
+from store.models import Product, Cart, CartItem, Order, Review
 from django.http import JsonResponse
 import json
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
-from .forms import CheckoutForm
+from .forms import CheckoutForm, ReviewForm
 from django.http import HttpResponseRedirect
 import requests
 from django.shortcuts import get_object_or_404
-
+from django.db.models import Q
 
 
 # pylint: disable=missing-function-docstring
@@ -108,6 +108,33 @@ class CustomerOrderDetailView(DetailView):
     model = Order
     context_object_name = "ord_obj"
 
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    reviews = product.reviews.all()
+
+    if request.method == "POST" and request.user.is_authenticated:
+        review_text = request.POST.get('review_text')
+        Review.objects.create(product=product, user=request.user, review_text=review_text)
+        return HttpResponseRedirect(reverse('product_detail', args=[product_id]))  # Redirect after POST
+
+    context = {
+        'product': product,
+        'reviews': reviews,
+    }
+    return render(request, 'product_detail.html', context)
+
+def search_results(request):
+    query = request.GET.get('query')
+    products = Product.objects.filter(
+        Q(category__icontains=query) | 
+        Q(subcategory__icontains=query)
+    )
+    context = {
+        'products': products,
+        'query': query  # Add this line
+    }
+    return render(request, 'search_results.html', context)
 
 def dog_products(request):
     """Display all dog products."""
@@ -212,13 +239,6 @@ def cat_products(request):
     cat_products = Product.objects.filter(category='Cat')
     context = {"products": cat_products}
     return render(request, "cat_products.html", context)
-
-def product_detail(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    context = {
-        'product': product
-    }
-    return render(request, 'product_detail.html', context)
 
 def checkout(request):
     cart = None

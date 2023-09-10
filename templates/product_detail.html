@@ -25,6 +25,29 @@
                     <h3><a href="{% url 'login' %}" class="btn btn-primary" style="background-color: #6050DC">Login to Add to Cart</a></h3>
                 {% endif %}
             </div>
+
+            <!-- Display existing reviews -->
+            <h3 class="mt-5">Reviews:</h3>
+            {% for review in reviews %}
+                <div class="border p-3 mb-3">
+                    <strong>{{ review.user.username }}</strong>: {{ review.review_text }}
+                </div>
+            {% endfor %}
+
+            <!-- Display review form -->
+            {% if request.user.is_authenticated %}
+                <h3 class="mt-5">Write a Review:</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="review_text" class="form-label">Your Review:</label>
+                        <textarea name="review_text" id="review_text" class="form-control" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="background-color: #6050DC">Submit Review</button>
+                </form>
+            {% else %}
+                <h3 class="mt-5">Login to write a review</h3>
+            {% endif %}
         </div>
     </div>
 </div>

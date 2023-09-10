@@ -1,20 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-4 text-center">
-            <a href="{% url 'dog_products' %}" class="category-link">
-                <h2>Dog</h2>
-            </a>
+
+<style>
+
+    .category-box {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        display: flex; /* Added for vertical centering */
+        align-items: center; /* Added for vertical centering */
+        justify-content: center; /* Added for horizontal centering */
+    }
+
+    .category-box:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 12px #6050DC;
+    }
+
+    .category-link {
+        display: block;
+        color: #6050DC; /* Text color is purple */
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .category-column {
+        margin-right: 2rem; /* Adjust this value as needed */
+    }
+
+    /* Adjusting the heading size for better visibility */
+    .category-link h2 {
+        font-size: 24px;
+        margin: 0; /* Removing default margin */
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4 text-center mb-4 category-column">
+            <div class="category-box">
+                <a href="{% url 'dog_products' %}" class="category-link">
+                    <h2>Dog</h2>
+                </a>
+            </div>
         </div>
-        <div class="col-md-6 text-center">
-            <a href="{% url 'cat_products' %}" class="category-link">
-                <h2>Cat</h2>
-            </a>
+        <div class="col-md-4 text-center mb-4 category-column">
+            <div class="category-box">
+                <a href="{% url 'cat_products' %}" class="category-link">
+                    <h2>Cat</h2>
+                </a>
+            </div>
         </div>
     </div>
 </div>
-
 {% endblock content %}
-

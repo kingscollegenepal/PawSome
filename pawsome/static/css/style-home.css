@@ -1,5 +1,3 @@
-
-
 /* navbar */
 * {
     box-sizing: border-box;
@@ -8,6 +6,7 @@
     box-sizing: border-box;
     font-family: 'Quicksand' !important;
   }
+
 nav{
     background-color: #6050DC;
     color: white;
@@ -17,23 +16,8 @@ nav{
     display:flex;
     align-items: center;
     justify-content: space-between;
-
 }
 
-div.container div.row a.category-link {
-    display: block;
-    padding: 20px;
-    border: 2px solid #6050DC;
-    border-radius: 10px;
-    color: black; /* Initial color set to black */
-    text-decoration: none;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-div.container div.row a.category-link:hover {
-    background-color: #6050DC;
-    color: purple; /* Text color on hover is purple */
-}
 
 .logo{
     width: fit-content;
@@ -139,7 +123,7 @@ div.container div.row a.category-link:hover {
     padding: 10px 10px 10px 10px;
     /* border: 2px solid black; */
     margin: auto;
-    margin-top: 20px;
+    margin-top: 30px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -215,8 +199,6 @@ div.container div.row a.category-link:hover {
     font-size: 20px;
 }
 
-
-
 .shoppingCart .heading{
     width: 100%;
     height: 50px;
@@ -229,6 +211,7 @@ div.container div.row a.category-link:hover {
     color: white;
     margin-top: 10px;
 }
+
 .shoppingCart .name, .p_name{
     /* border: 2px solid green; */
     width: 200px;
@@ -274,6 +257,7 @@ div.container div.row a.category-link:hover {
     /* border: 2px solid black; */
     
 }
+
 .p_img img{
     width: 100%;
     height: 100%;
@@ -302,3 +286,4 @@ div.container div.row a.category-link:hover {
 #num_of_items{
     margin-bottom: 0 !important;
 }
+

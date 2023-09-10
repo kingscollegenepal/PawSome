@@ -39,7 +39,6 @@
 
 <body>
 
-
     <nav>
         <div class="logo">
             <a href="{% url 'home' %}">
@@ -47,10 +46,13 @@
             </a>
         </div>
 
-
+            <!-- Search Bar -->
+        <form action="{% url 'search_results' %}" method="get" class="search-form">
+            <input type="text" name="query" placeholder="Search products...">
+            <button type="submit">Search</button>
+        </form>
+        
         <div class="header-menu">
-
-
 
             {% if request.user.is_authenticated %}
             <div class="dropdown">
@@ -88,8 +90,6 @@
         </div>
     </nav>
 
-
-
     {% if messages %}
 
     {% for message in messages %}
@@ -102,7 +102,6 @@
     {% endfor %}
 
     {% endif %}
-
 
     {% block content %}
 

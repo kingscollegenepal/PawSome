@@ -16,6 +16,7 @@
             <p><strong>Ingredients:</strong> {{ product.ingredients }}</p>
             <p><strong>Directions to Use:</strong> {{ product.direction_to_use }}</p>
             <p><strong>In Stock:</strong> {{ product.in_stock|yesno:"Yes,No" }}</p>
+            <p><strong>Average Rating:</strong> {{ average_rating|floatformat:2 }} / 5</p> <!-- Display the average rating -->
 
             <!-- Add to Cart Button -->
             <div class="productContainer">
@@ -34,14 +35,18 @@
                 </div>
             {% endfor %}
 
-            <!-- Display review form -->
+            <!-- Display review and rating form -->
             {% if request.user.is_authenticated %}
                 <h3 class="mt-5">Write a Review:</h3>
                 <form method="post">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="review_text" class="form-label">Your Review:</label>
-                        <textarea name="review_text" id="review_text" class="form-control" rows="4"></textarea>
+                        <strong>Rating:</strong><br>
+                        {{ form.rating }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.review_text.label_tag }}
+                        {{ form.review_text }}
                     </div>
                     <button type="submit" class="btn btn-primary" style="background-color: #6050DC">Submit Review</button>
                 </form>

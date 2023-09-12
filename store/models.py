@@ -76,7 +76,7 @@ class Cart(models.Model):
     completed = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.id)
+        return f"{self.user.username} - {self.id}"
     
     @property
     def total_price(self):
@@ -120,9 +120,9 @@ class Order(models.Model):
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
     ordered_by = models.CharField(max_length=200)
     shipping_address = models.CharField(max_length=200)
+    subtotal = models.PositiveIntegerField(default=False, blank=True)
     mobile = models.CharField(max_length=10)
     email = models.EmailField(null=True,blank=True)
-    subtotal = models.PositiveIntegerField(default=False, blank=True)
     discount = models.PositiveIntegerField(default=False, blank=True)
     total = models.PositiveIntegerField(default=False, blank=True)
     order_status = models.CharField(max_length=50, choices=ORDER_STATUS)
@@ -134,6 +134,7 @@ class Order(models.Model):
     
     def __str__(self):
         return "Order: " + str(self.id)
+
 
 
 

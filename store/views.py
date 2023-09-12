@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View, TemplateView, CreateView, FormView, DetailView, ListView
-from store.models import Product, Cart, CartItem, Order, Review
+from store.models import Product, Cart, CartItem, Order, Review, Rating
 from django.http import JsonResponse
+from django.db.models import Avg
 import json
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
@@ -10,6 +11,8 @@ from django.http import HttpResponseRedirect
 import requests
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.core.paginator import Paginator
+
 
 
 # pylint: disable=missing-function-docstring
@@ -113,16 +116,37 @@ def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     reviews = product.reviews.all()
 
+    # Calculate the average rating
+    average_rating = product.ratings.aggregate(avg_rating=Avg('value'))['avg_rating']
+    if average_rating is None:
+        average_rating = 0
+    
+    # Handle the review form submission
     if request.method == "POST" and request.user.is_authenticated:
-        review_text = request.POST.get('review_text')
-        Review.objects.create(product=product, user=request.user, review_text=review_text)
-        return HttpResponseRedirect(reverse('product_detail', args=[product_id]))  # Redirect after POST
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            # Save the review
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.save()
+
+            # Save the rating
+            Rating.objects.create(product=product, user=request.user, value=form.cleaned_data['rating'])
+
+            return HttpResponseRedirect(reverse('product_detail', args=[product_id]))  # Redirect after POST
+    else:
+        form = ReviewForm()
 
     context = {
         'product': product,
         'reviews': reviews,
+        'form': form,
+        'average_rating': average_rating  # Add this to pass the average rating to the template
     }
     return render(request, 'product_detail.html', context)
+
+
 
 def search_results(request):
     query = request.GET.get('query')

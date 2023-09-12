@@ -47,10 +47,11 @@
         </div>
 
             <!-- Search Bar -->
-        <form action="{% url 'search_results' %}" method="get" class="search-form">
-            <input type="text" name="query" placeholder="Search products...">
-            <button type="submit">Search</button>
+        <form action="{% url 'search_results' %}" method="get" class="d-flex" role="search">
+            <input type="text" name="query" class="form-control me-2" placeholder="Search products..." aria-label="Search">
+            <button type="submit" class="btn btn-primary">Search</button>
         </form>
+            
         
         <div class="header-menu">
 

@@ -339,3 +339,5 @@ class KhaltiVerifyView(View):
             "success": success
         }
         return JsonResponse(data)
+    
+

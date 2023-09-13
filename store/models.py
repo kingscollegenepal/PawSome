@@ -54,20 +54,20 @@ class Product(models.Model):
     
 class Rating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     value = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])  # Assuming a 1-5 rating scale
 
     def __str__(self):
-        return f"{self.user.username} - {self.product.name} - {self.value}"
+        return f"{self.product.name} - {self.value}"
     
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     review_text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.product.name}"
+        return f"{self.product.name}"
 
 
 class Cart(models.Model):
@@ -76,7 +76,7 @@ class Cart(models.Model):
     completed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user.username} - {self.id}"
+        return str(self.id)
     
     @property
     def total_price(self):
@@ -120,11 +120,10 @@ class Order(models.Model):
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
     ordered_by = models.CharField(max_length=200)
     shipping_address = models.CharField(max_length=200)
-    subtotal = models.PositiveIntegerField(default=False, blank=True)
     mobile = models.CharField(max_length=10)
     email = models.EmailField(null=True,blank=True)
-    discount = models.PositiveIntegerField(default=False, blank=True)
-    total = models.PositiveIntegerField(default=False, blank=True)
+    discount = models.PositiveIntegerField(default=0, blank=True)
+    total = models.PositiveIntegerField(default=0, blank=True)
     order_status = models.CharField(max_length=50, choices=ORDER_STATUS)
     created_at = models.DateTimeField(auto_now_add=True)
     payment_method = models.CharField(
@@ -134,7 +133,4 @@ class Order(models.Model):
     
     def __str__(self):
         return "Order: " + str(self.id)
-
-
-
 

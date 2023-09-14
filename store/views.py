@@ -12,6 +12,7 @@ import requests
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.paginator import Paginator
+from math import floor
 
 
 
@@ -120,6 +121,10 @@ def product_detail(request, product_id):
     average_rating = product.ratings.aggregate(avg_rating=Avg('value'))['avg_rating']
     if average_rating is None:
         average_rating = 0
+
+    # Calculate floor rating and check for half star
+    floor_rating = floor(average_rating)
+    half_star = 0.5 <= average_rating - floor_rating < 1  # Boolean (True if half star is needed, False otherwise)
     
     # Handle the review form submission
     if request.method == "POST" and request.user.is_authenticated:
@@ -131,7 +136,7 @@ def product_detail(request, product_id):
             review.user = request.user
             review.save()
 
-            # Save the rating
+            # Save the rating for the review
             Rating.objects.create(product=product, user=request.user, value=form.cleaned_data['rating'])
 
             return HttpResponseRedirect(reverse('product_detail', args=[product_id]))  # Redirect after POST
@@ -142,10 +147,11 @@ def product_detail(request, product_id):
         'product': product,
         'reviews': reviews,
         'form': form,
-        'average_rating': average_rating  # Add this to pass the average rating to the template
+        'average_rating': average_rating,
+        'floor_rating': floor_rating,
+        'half_star': half_star
     }
     return render(request, 'product_detail.html', context)
-
 
 
 def search_results(request):

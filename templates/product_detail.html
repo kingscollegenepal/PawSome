@@ -4,20 +4,26 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6">
-            <!-- Product Image -->
             <img src="{{ product.picture.url }}" alt="{{ product.name }}" class="img-fluid">
         </div>
         <div class="col-md-6">
-            <!-- Product Details -->
             <h2>{{ product.name }}</h2>
             <p><strong>Price:</strong> Rs.{{ product.price }}</p>
             <p><strong>Size:</strong> {{ product.size }}</p>
-            <p><strong>Description:</strong> {{ product.description }}</p>
-            <p><strong>Ingredients:</strong> {{ product.ingredients }}</p>
-            <p><strong>Directions to Use:</strong> {{ product.direction_to_use }}</p>
             <p><strong>In Stock:</strong> {{ product.in_stock|yesno:"Yes,No" }}</p>
-            <p><strong>Average Rating:</strong> {{ average_rating|floatformat:2 }} / 5</p> <!-- Display the average rating -->
-
+            
+            {% for star in "12345"|make_list %}
+            {% if forloop.counter <= floor_rating %}
+                <i class="bi bi-star-fill" style="color: gold;"></i>
+            {% elif forloop.counter == floor_rating|add:"1" and half_star %}
+                <i class="bi bi-star-half" style="color: gold;"></i>
+            {% else %}
+                <i class="bi bi-star" style="color: gold;"></i>
+            {% endif %}
+            {% endfor %}
+        <span>{{ average_rating|floatformat:1 }}</span>
+            
+            
             <!-- Add to Cart Button -->
             <div class="productContainer">
                 {% if request.user.is_authenticated %}
@@ -25,6 +31,12 @@
                 {% else %}
                     <h3><a href="{% url 'login' %}" class="btn btn-primary" style="background-color: #6050DC">Login to Add to Cart</a></h3>
                 {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <p><strong>Description:</strong> {{ product.description }}</p>
+                <p><strong>Ingredients:</strong> {{ product.ingredients }}</p>
+                <p><strong>Directions to Use:</strong> {{ product.direction_to_use }}</p>
             </div>
 
             <!-- Display existing reviews -->
@@ -40,10 +52,12 @@
                 <h3 class="mt-5">Write a Review:</h3>
                 <form method="post">
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <strong>Rating:</strong><br>
-                        {{ form.rating }}
-                    </div>
+                    <div class="rating">
+                        {% for star_num in "54321"|make_list %}  <!-- Descending order -->
+                            <input type="radio" name="rating" id="star{{ star_num }}" value="{{ star_num }}" {% if form.rating.value == star_num %} checked {% endif %} style="display: none;">
+                            <label for="star{{ star_num }}" title="{{ star_num }} star">&#9733;</label>
+                        {% endfor %}
+                    </div>                   
                     <div class="mb-3">
                         {{ form.review_text.label_tag }}
                         {{ form.review_text }}
@@ -56,4 +70,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}

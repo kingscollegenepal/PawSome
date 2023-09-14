@@ -27,6 +27,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/all.css' %}">
     <link rel="stylesheet" href="{% static 'css/style-home.css' %}">
+        <!-- Add this line to include Font Awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
 </head>
 
@@ -35,7 +37,28 @@
         color: white;
         text-decoration: none;
     }
+
+    .rating {
+    display: flex;
+    flex-direction: row-reverse;  /* Display labels in reverse order */
+    justify-content: center;
+    }
+
+    .rating > label {
+    cursor: pointer;
+    font-size: 24px;
+    padding: 0 5px;
+    color: #ccc;  /* Default star color */
+    }
+
+    .rating > label:hover,
+    .rating > label:hover ~ label,
+    .rating > input:checked ~ label {
+    color: gold;  /* Color when hovered or selected */
+    }
+
 </style>
+
 
 <body>
 
@@ -95,12 +118,28 @@
 
     {% for message in messages %}
 
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{message}}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <img src="..." class="rounded me-2" alt="...">
+          <strong class="me-auto">PawSome</strong>
+          <small>Just Now</small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            {{message}}
+        </div>
     </div>
 
     {% endfor %}
+
+    <script>
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            var toast = new bootstrap.Toast(toastEl)
+            toast.show();
+            return toast;
+        });
+    </script>
 
     {% endif %}
 

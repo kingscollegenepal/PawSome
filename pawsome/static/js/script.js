@@ -16,7 +16,6 @@ function getCookie(name) {
 const csrftoken = getCookie('csrftoken');
 
 
-
 let btns = document.querySelectorAll(".productContainer button")
 
 btns.forEach(btn=>{
@@ -27,7 +26,9 @@ function addToCart(e){
     let product_id = e.target.value
     let url = "/add_to_cart"
 
-    let data = {id:product_id}
+    let data = {
+        id: product_id// Send the quantity as well
+    };
 
     fetch(url,{
         method : "POST",
@@ -42,5 +43,7 @@ function addToCart(e){
     .catch(error=>{
         console.log(error);
     })
+
+    
 }
 

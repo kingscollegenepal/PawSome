@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View, TemplateView, CreateView, FormView, DetailView, ListView
 from store.models import Product, Cart, CartItem, Order, Review, Rating
 from django.http import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Avg
 import json
 from django.contrib import messages
@@ -44,7 +45,6 @@ def cart(request):
 
     context = {"cart":cart, "items":cartitems}
     return render(request, "cart.html", context)
-
 
 def add_to_cart(request):
     data = json.loads(request.body)
@@ -96,6 +96,7 @@ class ManageCartView(View):
 
         return redirect("cart")
 
+
 class CustomerProfileView(TemplateView):
     template_name = "customerprofile.html"
 
@@ -121,6 +122,9 @@ def product_detail(request, product_id):
     average_rating = product.ratings.aggregate(avg_rating=Avg('value'))['avg_rating']
     if average_rating is None:
         average_rating = 0
+
+    # Calculate the number of reviews
+    review_count = reviews.count()
 
     # Calculate floor rating and check for half star
     floor_rating = floor(average_rating)
@@ -149,7 +153,8 @@ def product_detail(request, product_id):
         'form': form,
         'average_rating': average_rating,
         'floor_rating': floor_rating,
-        'half_star': half_star
+        'half_star': half_star,
+        'review_count': review_count  # Adding review_count to the context
     }
     return render(request, 'product_detail.html', context)
 

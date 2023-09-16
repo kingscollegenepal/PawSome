@@ -34,7 +34,7 @@ class Product(models.Model):
         ('Grooming Supplies', 'Grooming Supplies'),
     )
     
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     price = models.IntegerField()
     picture = models.ImageField(upload_to="img", default="")
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='Dog')

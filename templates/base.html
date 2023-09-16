@@ -57,6 +57,20 @@
     color: gold;  /* Color when hovered or selected */
     }
 
+    .search-btn {
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .search-btn:hover {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+    }
+
 </style>
 
 
@@ -72,7 +86,7 @@
             <!-- Search Bar -->
         <form action="{% url 'search_results' %}" method="get" class="d-flex" role="search">
             <input type="text" name="query" class="form-control me-2" placeholder="Search products..." aria-label="Search">
-            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="submit" class="btn btn-primary search-btn">Search</button>
         </form>
             
         

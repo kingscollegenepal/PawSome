@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             model_name="order",
             name="user",
             field=models.ForeignKey(
-                default="admin",
+                default=1,
                 on_delete=django.db.models.deletion.CASCADE,
                 to=settings.AUTH_USER_MODEL,
             ),

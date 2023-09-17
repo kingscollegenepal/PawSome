@@ -3,26 +3,181 @@
 {% load humanize %}
 
 {% block content %}
-<div class="container">
-    <h2>Dog Products</h2>
-    <div class="row justify-content-center">
-        <h3>Subcategories</h3>
-        <ul>
-            <li><a href="{% url 'pens_products' %}">Pens</a></li>
-            <li><a href="{% url 'beds_products' %}">Beds</a></li>
-            <li><a href="{% url 'crates_products' %}">Crates</a></li>
-            <li><a href="{% url 'gates_products' %}">Gates</a></li>
-            <li><a href="{% url 'cameras_products' %}">Cameras</a></li>
-            <li><a href="{% url 'treats_products' %}">Treats</a></li>
-            <li><a href="{% url 'food_products' %}">Food</a></li>
-            <li><a href="{% url 'bowls_feeders_products' %}">Bowls & Feeders</a></li>
-            <li><a href="{% url 'food_storage_accessories_products' %}">Food Storage & Accessories</a></li>
-            <li><a href="{% url 'toys_products' %}">Toys</a></li>
-            <li><a href="{% url 'collar_leashes_products' %}">Collar & Leashes</a></li>
-            <li><a href="{% url 'training_aids_products' %}">Training Aids</a></li>
-            <li><a href="{% url 'vitamins_supplements_products' %}">Vitamins & Supplements</a></li>
-            <li><a href="{% url 'grooming_supplies_products' %}">Grooming Supplies</a></li>
-        </ul>
+
+{% load static %}
+
+
+<style>
+      .carousel-item {
+    height: 300px; /* Adjust this height value to your preference */
+    overflow: hidden;
+    }
+
+    .carousel-item img {
+    height: 100%;
+    object-fit: cover;
+    }
+</style>
+
+<div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active" data-bs-interval="10000">
+      <img src="{% static 'css/Dog-Product.jpg' %}" class="d-block w-100" alt="Dog-Product">
     </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+
+
+<h2>Dog Products</h2>
+<h3>Shop by Categories</h3>
+
+<div class="container mt-5">
+
+    <a href="{% url 'beds_and_mats_products' %}">
+    <div class="card mb-2 product-card" style="max-width: 540px;">
+        <div class="row g-0">
+          <div class="col-md-2">
+            <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
+          </div>
+          <div class="col-md-4">
+            <div class="card-body">
+                <h5 class="card-title" style = "color:black ;">Beds and Mats</h5>
+            </div>
+          </div>
+        </div>
+    </div>
+    </a>
+
+    <a href="{% url 'healthcare_products' %}">
+        <div class="card mb-2 product-card" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-2">
+                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
+              </div>
+              <div class="col-md-4">
+                <div class="card-body">
+                    <h5 class="card-title" style = "color:black ;">Healthcare</h5>
+                </div>
+              </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="{% url 'treats_and_chews_products' %}">
+        <div class="card mb-2 product-card" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-2">
+                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
+              </div>
+              <div class="col-md-4">
+                <div class="card-body">
+                    <h5 class="card-title" style = "color:black ;">Treats & Chews</h5>
+                </div>
+              </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="{% url 'food_products' %}">
+        <div class="card mb-2 product-card" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-2">
+                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
+              </div>
+              <div class="col-md-4">
+                <div class="card-body">
+                    <h5 class="card-title" style = "color:black ;">Food</h5>
+                </div>
+              </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="{% url 'bowls_feeders_products' %}">
+        <div class="card mb-2 product-card" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-2">
+                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
+              </div>
+              <div class="col-md-4">
+                <div class="card-body">
+                    <h5 class="card-title" style = "color:black ;">Bowls & Feeders</h5>
+                </div>
+              </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="{% url 'toys_products' %}">
+        <div class="card mb-2 product-card" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-2">
+                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
+              </div>
+              <div class="col-md-4">
+                <div class="card-body">
+                    <h5 class="card-title" style = "color:black ;">Toys</h5>
+                </div>
+              </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="{% url 'collar_leashes_products' %}">
+        <div class="card mb-2 product-card" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-2">
+                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
+              </div>
+              <div class="col-md-4">
+                <div class="card-body">
+                    <h5 class="card-title" style = "color:black ;">Collar Leashes</h5>
+                </div>
+              </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="{% url 'training_aids_products' %}">
+        <div class="card mb-2 product-card" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-2">
+                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
+              </div>
+              <div class="col-md-4">
+                <div class="card-body">
+                    <h5 class="card-title" style = "color:black ;">Training Aids</h5>
+                </div>
+              </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="{% url 'grooming_supplies_products' %}">
+        <div class="card mb-2 product-card" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-2">
+                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
+              </div>
+              <div class="col-md-4">
+                <div class="card-body">
+                    <h5 class="card-title" style = "color:black ;">Grooming Supplies</h5>
+                </div>
+              </div>
+            </div>
+        </div>
+    </a>
+
+
+
 </div>
 {% endblock content %}

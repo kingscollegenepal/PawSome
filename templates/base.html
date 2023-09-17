@@ -33,6 +33,11 @@
 </head>
 
 <style>
+
+    .white-text {
+        color: white !important;  /* Using !important to override Bootstrap's styles if necessary */
+    }
+
     a {
         color: white;
         text-decoration: none;
@@ -82,50 +87,167 @@
                 Pawsome
             </a>
         </div>
-
-            <!-- Search Bar -->
-        <form action="{% url 'search_results' %}" method="get" class="d-flex" role="search">
-            <input type="text" name="query" class="form-control me-2" placeholder="Search products..." aria-label="Search">
-            <button type="submit" class="btn btn-primary search-btn">Search</button>
-        </form>
-            
+        
+        <ul class="nav nav-underline">
+            <nav class="navbar navbar-expand-lg bg-body-tertiary nav">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <div class="btn-group">
+                        <button type="button" class="btn white-text">
+                            <a href="{% url 'dog_products' %}" class="category-link white-text">Dog</a>
+                        </button>
+                        <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'beds_and_mats_products' %}">Beds & Mats</a></li>
+                        <li><a class="dropdown-item" href="{% url 'food_products' %}">Food</a></li>
+                        <li><a class="dropdown-item" href="{% url 'healthcare_products' %}">Healthcare</a></li>
+                        <li><a class="dropdown-item" href="{% url 'treats_and_chews_products' %}">Treats & Chews</a></li>
+                        <li><a class="dropdown-item" href="{% url 'bowls_feeders_products' %}">Bowls</a></li>
+                        <li><a class="dropdown-item" href="{% url 'collar_leashes_products' %}">Collar & Leashes</a></li>
+                        <li><a class="dropdown-item" href="{% url 'training_aids_products' %}">Training Aids</a></li>
+                        <li><a class="dropdown-item" href="{% url 'grooming_supplies_products' %}">Grooming Supplies</a></li>
+                        <li><a class="dropdown-item" href="{% url 'toys_products' %}">Toys</a></li>
+                        <li><a class="dropdown-item" href="{% url 'crates_carriers_products' %}">Crates & Carriers</a></li>
+                        </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <div class="btn-group">
+                            <button type="button" class="btn white-text">
+                                <a href="{% url 'cat_products' %}" class="category-link white-text">Cat</a>
+                            </button>
+                            <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Food</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Bed</a></li>
+                            </ul>
+                            </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <div class="btn-group">
+                            <button type="button" class="btn white-text">
+                                <a href="#" class="category-link white-text">New Paw Parent</a>
+                            </button>
+                            <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">
+                                <img src="{% static 'css/Shop Dog.jpg' %}" class="img-fluid rounded-start" alt="Shop Dog">
+                                <h5>Dog</h5>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">
+                                <img src="{% static 'css/Shop Cat.jpg' %}" class="img-fluid rounded-start" alt="Shop Cat">
+                                <h5>Cat</h5>
+                                </a>
+                            </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <div class="btn-group">
+                            <button type="button" class="btn white-text">
+                                <a href="#" class="category-link white-text">Shop by Brand</a>
+                            </button>
+                            <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">
+                                <img src="{% static 'css/Pedigree.jpg' %}" class="img-fluid rounded-start" alt="Pedigree">
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item" href="#">
+                                <img src="{% static 'css/Whiskas.jpg' %}" class="img-fluid rounded-start" alt="Whiskas">
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item" href="#">
+                                <img src="{% static 'css/Royal Canin.jpg' %}" class="img-fluid rounded-start" alt="Royal Canin">
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item" href="#">
+                                <img src="{% static 'css/Drools.jpg' %}" class="img-fluid rounded-start" alt="Drools">
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item" href="#">
+                                <img src="{% static 'css/Farmina.jpg' %}" class="img-fluid rounded-start" alt="Farmina">
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item" href="#">
+                                <img src="{% static 'css/Sheba.jpg' %}" class="img-fluid rounded-start" alt="Sheba">
+                                </a>
+                            </li>
+                            </ul>
+                        </div>
+                    </li>
+                    </ul>
+                    <form action="{% url 'search_results' %}" method="get" class="d-flex" role="search">
+                        <input type="text" name="query" class="form-control me-2" placeholder="Search products..." aria-label="Search">
+                        <button type="submit" class="btn btn-primary search-btn">Search</button>
+                    </form>
+                </div>
+                </div>
+            </nav>
+        </ul>
         
         <div class="header-menu">
 
             {% if request.user.is_authenticated %}
-            <div class="dropdown">
-                <button class="text-white bg-transparent shadow-none border-0 dropdown-toggle" type="button"
-                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{request.user.username}}
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="{% url 'customerprofile' %}">My Profile</a>
-                    <a class="dropdown-item" href="logout/success">Logout</a>
+            <div class="user-section d-inline-flex align-items-center">
+                <i class="bi bi-person-circle mr-3"></i>  <!-- increased margin here -->
+                <div class="dropdown">
+                    <button class="text-white bg-transparent shadow-none border-0 dropdown-toggle" type="button"
+                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ request.user.username }}
+                    </button>
+        
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{% url 'customerprofile' %}">My Profile</a>
+                        <a class="dropdown-item" href="logout/success">Logout</a>
+                    </div>
                 </div>
             </div>
             {% else %}
-            <a href="{% url 'login' %}">Login</a>
+            <div class="login-section d-inline-flex align-items-center">
+                <i class="bi bi-person-circle mr-3"></i>  <!-- increased margin here -->
+                <a href="{% url 'login' %}">Login</a>
+            </div>
             {% endif %}
-            
+        
             {% if request.user.is_authenticated %}
             <div class="cart">
                 <a href="{% url 'cart' %}" style="color:white; text-decoration:none">
                     <button type="button" class="btn btn-primary cart-button">
-                        <i class="bi bi-cart"></i> <span class="badge badge-light">
-                            <p id="num_of_items">{%if cart.num_of_items %} {{cart.num_of_item}} {%else%} 0 {%endif%}</p>
+                        <i class="bi bi-cart"></i> 
+                        <span class="badge badge-light">
+                            <p id="num_of_items">{% if cart.num_of_items %} {{ cart.num_of_item }} {% else %} 0 {% endif %}</p>
                         </span>
                     </button>
-                    {% else %}
-                    <a href="{% url 'login' %}" style="color:white; text-decoration:none">
-                        <button type="button" class="btn btn-primary cart-button">
-                            <i class="bi bi-cart"></i> <span class="badge badge-light">
-                                <p id="num_of_items">{%if cart.num_of_items %} {{cart.num_of_item}} {%else%} 0 {%endif%}</p>
-                            </span>
-                        </button>
-                    {% endif %}
                 </a>
             </div>
+            {% else %}
+            <div class="cart">
+                <a href="{% url 'login' %}" style="color:white; text-decoration:none">
+                    <button type="button" class="btn btn-primary cart-button">
+                        <i class="bi bi-cart"></i> 
+                        <span class="badge badge-light">
+                            <p id="num_of_items">{% if cart.num_of_items %} {{ cart.num_of_item }} {% else %} 0 {% endif %}</p>
+                        </span>
+                    </button>
+                </a>
+            </div>
+            {% endif %}
         </div>
+        
+        
     </nav>
 
     {% if messages %}

@@ -158,6 +158,30 @@ def product_detail(request, product_id):
     }
     return render(request, 'product_detail.html', context)
 
+def cat_rating_product(request):
+    products = Product.objects.all()
+
+    for product in products:
+        average_rating = product.ratings.aggregate(avg_rating=Avg('value'))['avg_rating']
+        if average_rating is None:
+            average_rating = 0
+
+        floor_rating = floor(average_rating)
+        half_star = 0.5 <= average_rating - floor_rating < 1
+
+        # Attach the ratings to the product object for easier access in the template
+        product.average_rating = average_rating
+        product.floor_rating = floor_rating
+        product.half_star = half_star
+
+    context = {
+        'products': products,
+        # ... any other context data you need ...
+    }
+    
+    return render(request, 'cat_products.html', context)
+
+
 
 def search_results(request):
     query = request.GET.get('query')
@@ -181,43 +205,23 @@ def dog_products(request):
     }
     return render(request, "dog_products.html", context)
 
-def pens_products(request):
+def beds_and_mats_products(request):
     """Display all dog pen products."""
-    pens_products = Product.objects.filter(category='Dog', subcategory='Pens')
-    context = {"products": pens_products}
-    return render(request, "pens_products.html", context)
+    beds_and_mats_products = Product.objects.filter(category='Dog', subcategory='Beds and Mats')
+    context = {"products": beds_and_mats_products}
+    return render(request, "beds_and_mats_products.html", context)
 
-def beds_products(request):
+def healthcare_products(request):
     """Display all dog pen products."""
-    beds_products = Product.objects.filter(category='Dog', subcategory='Beds')
-    context = {"products": beds_products}
-    return render(request, "beds_products.html", context)
+    healthcare_products = Product.objects.filter(category='Dog', subcategory='healthcare')
+    context = {"products": healthcare_products}
+    return render(request, "healthcare_products.html", context)
 
-
-def crates_products(request):
+def treats_and_chews_products(request):
     """Display all dog pen products."""
-    crates_products = Product.objects.filter(category='Dog', subcategory='Crates')
-    context = {"products": crates_products}
-    return render(request, "crates_products.html", context)
-
-
-def gates_products(request):
-    """Display all dog pen products."""
-    gates_products = Product.objects.filter(category='Dog', subcategory='Gates')
-    context = {"products": gates_products}
-    return render(request, "gates_products.html", context)
-
-def cameras_products(request):
-    """Display all dog pen products."""
-    cameras_products = Product.objects.filter(category='Dog', subcategory='Cameras')
-    context = {"products": cameras_products}
-    return render(request, "cameras_products.html", context)
-
-def treats_products(request):
-    """Display all dog pen products."""
-    treats_products = Product.objects.filter(category='Dog', subcategory='Treats')
-    context = {"products": treats_products}
-    return render(request, "treats_products.html", context)
+    treats_and_chews_products = Product.objects.filter(category='Dog', subcategory='Treats and Chews')
+    context = {"products": treats_and_chews_products}
+    return render(request, "treats_and_chews_products.html", context)
 
 def food_products(request):
     """Display all dog pen products."""
@@ -231,11 +235,6 @@ def bowls_feeders_products(request):
     context = {"products": bowls_feeders_products}
     return render(request, "bowls_feeders_products.html", context)
 
-def food_storage_accessories_products(request):
-    """Display all dog pen products."""
-    food_storage_accessories_products = Product.objects.filter(category='Dog', subcategory='Food Storage & Accessories')
-    context = {"products": food_storage_accessories_products}
-    return render(request, "food_storage_accessories_products.html", context)
 
 def toys_products(request):
     """Display all dog pen products."""
@@ -255,23 +254,34 @@ def training_aids_products(request):
     context = {"products": training_aids_products}
     return render(request, "training_aids_products.html", context)
 
-
-def vitamins_supplements_products(request):
-    """Display all dog pen products."""
-    vitamins_supplements_products = Product.objects.filter(category='Dog', subcategory='Vitamins & Supplements')
-    context = {"products": vitamins_supplements_products}
-    return render(request, "vitamins_supplements_products.html", context)
-
-
 def grooming_supplies_products(request):
     """Display all dog pen products."""
     grooming_supplies_products = Product.objects.filter(category='Dog', subcategory='Vitamins & Supplements')
     context = {"products": grooming_supplies_products}
     return render(request, "grooming_supplies_products.html", context)
 
+def crates_and_carriers_products(request):
+    """Display all dog pen products."""
+    crates_and_carriers_products = Product.objects.filter(category='Dog', subcategory='Crates & Carriers')
+    context = {"products": crates_and_carriers_products}
+    return render(request, "crates_and_carriers_products.html", context)
+
 def cat_products(request):
     """Display all cat products."""
     cat_products = Product.objects.filter(category='Cat')
+    for product in cat_products:
+        average_rating = product.ratings.aggregate(avg_rating=Avg('value'))['avg_rating']
+        if average_rating is None:
+            average_rating = 0
+
+        floor_rating = floor(average_rating)
+        half_star = 0.5 <= average_rating - floor_rating < 1
+
+        # Attach the ratings to the product object for easier access in the template
+        product.average_rating = average_rating
+        product.floor_rating = floor_rating
+        product.half_star = half_star
+
     context = {"products": cat_products}
     return render(request, "cat_products.html", context)
 

@@ -122,5 +122,10 @@
         <h3 class="font-weight-bold">Grand-Total: Rs.{{cart.total_price | intcomma}}</h3>
         <a class="btn btn-info checkout-btn" href="{% url 'checkout' %}"> Checkout </a>
     </div>
+
+</div>
+
+<div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+    <div class="progress-bar" style="width: 25%">25%</div>
 </div>
 {% endblock content %}

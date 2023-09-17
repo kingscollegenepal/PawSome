@@ -2,6 +2,8 @@
 
 {% block content %}
 
+{% load static %}
+
 <style>
 
     .category-box {
@@ -32,24 +34,109 @@
         font-size: 24px;
         margin: 0; /* Removing default margin */
     }
+
+    .card-img {
+            height: 900px;
+            width: 1600px;
+            display: block;
+            margin: 0 auto;
+        }
+
+    .carousel-item {
+    height: 500px; /* Adjust this height value to your preference */
+    overflow: hidden;
+    }
+
+    .carousel-item img {
+    height: 100%;
+    object-fit: cover;
+    }
+
+    .image-container {
+    height: 250px; /* Adjust this height value to your preference */
+    overflow: hidden;
+    }
+
+    .image-container img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+    }
+
+    .full-height {
+    min-height: 20vh;
+    }
+
 </style>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-4 text-center mb-4 category-column">
-            <div class="category-box">
-                <a href="{% url 'dog_products' %}" class="category-link">
-                    <h2>Dog</h2>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-4 text-center mb-4 category-column">
-            <div class="category-box">
-                <a href="{% url 'cat_products' %}" class="category-link">
-                    <h2>Cat</h2>
-                </a>
-            </div>
-        </div>
+<div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active" data-bs-interval="10000">
+      <img src="{% static 'css/Together.jpg' %}" class="d-block w-100" alt="Together">
     </div>
+    <div class="carousel-item" data-bs-interval="2000">
+      <img src="{% static 'css/Home.jpg' %}" class="d-block w-100" alt="Home">
+    </div>
+    <div class="carousel-item" data-bs-interval="3000">
+      <img src="{% static 'css/Dog.jpg' %}" class="d-block w-100" alt="Dog">
+    </div>
+    <div class="carousel-item" data-bs-interval="4000">
+      <img src="{% static 'css/Cat.jpg' %}" class="d-block w-100" alt="Cat">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
 </div>
+
+
+<div class="container mt-8 full-height d-flex align-items-center">
+  <div class="row justify-content-center w-100">
+
+      <!-- Dog Card -->
+      <div class="col-md-6 mb-4 text-center product-card">
+          <a href="{% url 'dog_products' %}">
+              <div class="card">
+                  <div class="row g-0">
+                      <div class="col-md-6 d-flex align-items-center">
+                          <div class="card-body text-center">
+                              <h5 class="card-title" style="color:black; font-size: 24px;">Shop for Dogs</h5>
+                          </div>
+                      </div>
+                      <div class="col-md-6 image-container">
+                          <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog" style="object-fit: cover; width: 100%; height: 100%;">
+                      </div>
+                  </div>
+              </div>
+          </a>
+      </div>
+
+      <!-- Cat Card -->
+      <div class="col-md-6 mb-4 text-center product-card">
+          <a href="{% url 'cat_products' %}">
+              <div class="card">
+                  <div class="row g-0">
+                      <div class="col-md-6 d-flex align-items-center">
+                          <div class="card-body text-center">
+                              <h5 class="card-title" style="color:black; font-size: 24px;">Shop for Cats</h5>
+                          </div>
+                      </div>
+                      <div class="col-md-6 image-container">
+                          <img src="{% static 'css/Cat.jpg' %}" class="img-fluid rounded-start" alt="Cat" style="object-fit: cover; width: 100%; height: 100%;">
+                      </div>
+                  </div>
+              </div>
+          </a>
+      </div>
+
+  </div> <!-- End of row -->
+</div> <!-- End of container -->
+
+
+
 {% endblock content %}

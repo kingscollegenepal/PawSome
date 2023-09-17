@@ -21,7 +21,9 @@
 
 
     <button id="payment-button">Pay with Khalti</button>
-    <a href="/">Go to Home page</a>
+    <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar" style="width: 75%">75%</div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
@@ -60,6 +62,7 @@
                         if (resp.data.success == true){
                             alert("Thanks. Payment Completed Successfully")
                             location.href = "/"
+                            
                         }else{
                             alert("Sorry. Error occurred")
                             location.href = "{{request.build_absolute_uri}}"

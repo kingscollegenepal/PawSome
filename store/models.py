@@ -18,27 +18,23 @@ class Product(models.Model):
     )
 
     SUBCATEGORY_CHOICES = (
-        ('Pens', 'Pens'),
-        ('Beds', 'Beds'),
-        ('Crates', 'Crates'),
-        ('Gates', 'Gates'),
-        ('Cameras', 'Cameras'),
-        ('Treats', 'Treats'),
+        ('Beds & Mats', 'Beds & Mats'),
+        ('Healthcare', 'Healthcare'),
+        ('Treats & Chews', 'Treats & Chews'),
         ('Food', 'Food'),
         ('Bowls & Feeders', 'Bowls & Feeders'),
-        ('Food Storage & Accessories', 'Food Storage & Accessories'),
         ('Toys', 'Toys'),
         ('Collar & Leashes', 'Collar & Leashes'),
         ('Training Aids', 'Training Aids'),
-        ('Vitamins & Supplements', 'Vitamins & Supplements'),
         ('Grooming Supplies', 'Grooming Supplies'),
+        ('Crates & Carriers', 'Crates & Carriers'),
     )
     
     name = models.CharField(max_length=100)
     price = models.IntegerField()
     picture = models.ImageField(upload_to="img", default="")
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='Dog')
-    subcategory = models.CharField(max_length=30, choices=SUBCATEGORY_CHOICES, default='Pens')
+    subcategory = models.CharField(max_length=30, choices=SUBCATEGORY_CHOICES, default='Food')
     size = models.CharField(max_length=10, choices=CATEGORY_SIZE_CHOICES, default='Small')
     description = models.TextField(default="No description available")
     ingredients = models.TextField(default="No ingredients listed")

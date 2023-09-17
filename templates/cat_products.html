@@ -2,11 +2,43 @@
 
 {% load humanize %}
 
+{% load static %}
+
 {% block content %}
+
+<style>
+    .carousel-item {
+  height: 300px; /* Adjust this height value to your preference */
+  overflow: hidden;
+  }
+
+  .carousel-item img {
+  height: 100%;
+  object-fit: cover;
+  }
+</style>
+
+<div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active" data-bs-interval="10000">
+        <img src="{% static 'css/Cat-Product.jpg' %}" class="d-block w-100" alt="Cat-Product">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  
 
 <div class="container">
     <h2>Cat Products</h2>
     <div class="row justify-content-center">
+
         {% for product in products %}
         <div class="col-md-3 mb-4">
             <div class="productContainer">
@@ -15,7 +47,21 @@
                     <div class="card-body">
                         <h5 class="card-title" style = "color:black ;">{{ product.name }}</h5>
                         <p class="card-text" style = "color:black ;">{{ product.description|truncatewords:20 }}</p>
-                        <p class="card-text" style = "color:black ;">Rating: {{ product.average_rating|floatformat:1 }} / 5</p>  <!-- Displaying the average rating -->
+                            
+                            {% for star in "12345"|make_list %}
+                                {% if forloop.counter <= product.floor_rating %}
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                {% elif forloop.counter == product.floor_rating|add:"1" and product.half_star %}
+                                    <i class="bi bi-star-half" style="color: gold;"></i>
+                                {% else %}
+                                    <i class="bi bi-star" style="color: gold;"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <span>{{product.floor_rating}}</span>
+                            <span style="color:goldenrod;">({{ product.average_rating|floatformat:1 }})</span>
+                            <!-- ... other product details ... -->
+
+
                         <p class="card-text" style = "color:black ;">Rs.{{product.price | intcomma}}</p>
                         <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">View Details</a>
                     </div>

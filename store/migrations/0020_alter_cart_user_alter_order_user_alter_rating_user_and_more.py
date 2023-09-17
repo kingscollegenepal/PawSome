@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             model_name="cart",
             name="user",
             field=models.ForeignKey(
-                default="admin",
+                default=1,
                 on_delete=django.db.models.deletion.CASCADE,
                 to=settings.AUTH_USER_MODEL,
             ),
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             model_name="order",
             name="user",
             field=models.ForeignKey(
-                default="admin",
+                default=1,
                 on_delete=django.db.models.deletion.CASCADE,
                 to=settings.AUTH_USER_MODEL,
             ),
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
             model_name="rating",
             name="user",
             field=models.ForeignKey(
-                default="admin",
+                default=1,
                 on_delete=django.db.models.deletion.CASCADE,
                 to=settings.AUTH_USER_MODEL,
             ),
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
             model_name="review",
             name="user",
             field=models.ForeignKey(
-                default="admin",
+                default=1,
                 on_delete=django.db.models.deletion.CASCADE,
                 to=settings.AUTH_USER_MODEL,
             ),

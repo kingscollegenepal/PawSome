@@ -40,7 +40,7 @@
     <div class="row justify-content-center">
 
         {% for product in products %}
-        <div class="col-md-3 mb-4">
+        <div class="col-6 col-sm-4 col-md-3 mb-4">
             <div class="productContainer">
                 <div class="card w-full card-product product-card" style="box-shadow:0 0 8px #6050DC"><a href="{% url 'product_detail' product.id %}">
                     <img class="card-img-top" src="{{product.picture.url}}" alt="{{product.name}}">

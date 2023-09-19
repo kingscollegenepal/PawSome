@@ -83,10 +83,10 @@
     }
 </style>
 
-<div class="shoppingCart">
+<div class="shoppingCart container-fluid">
     <h2 class="mb-4">My Cart</h2>
 
-    <div class="heading row font-weight-bold">
+    <div class="heading row font-weight-bold d-none d-md-flex">
         <div class="col-md-4">Product</div>
         <div class="col-md-2">Quantity</div>
         <div class="col-md-2">Unit Price</div>
@@ -94,22 +94,21 @@
         <div class="col-md-2">Actions</div>
     </div>
 
-    <div class="itemContainer">
+<div class="itemContainer">
         {% for item in items %}
-        <div class="item row border-bottom py-3">
-            <div class="col-md-4">
+        <div class="item row border-bottom py-2">
+            <div class="col-12 col-md-4 mb-2 mb-md-0">
                 <div class="iteminfo d-flex">
-                    <div class="p_img pr-3">
+                    <div class="p_img pr-2 pr-md-3">
                         <img src="{{item.product.picture.url}}" alt="" class="img-fluid" />
                     </div>
                     <p>{{item.product.name}}</p>
                 </div>
             </div>
-
-            <div class="col-md-2"><p>{{item.quantity}}</p></div>
-            <div class="col-md-2"><p>Rs.{{item.product.price | intcomma}}</p></div>
-            <div class="col-md-2"><p>Rs.{{item.price | intcomma}}</p></div>
-            <div class="col-md-2">
+            <div class="col-4 col-md-2"><p>Qty: {{item.quantity}}</p></div>
+            <div class="col-4 col-md-2"><p>Rs.{{item.product.price | intcomma}}</p></div>
+            <div class="col-4 col-md-2"><p>Total: Rs.{{item.price | intcomma}}</p></div>
+            <div class="col-12 col-md-2 text-center">
                 <a href="{% url 'managecart' item.id %}?action=inc" class="btn btn-primary btn-sm"> + </a>
                 <a href="{% url 'managecart' item.id %}?action=dcr" class="btn btn-warning btn-sm"> - </a>
                 <a href="{% url 'managecart' item.id %}?action=rmv" class="btn btn-danger btn-sm"> x </a>

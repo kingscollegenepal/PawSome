@@ -76,8 +76,48 @@
         border-color: #4CAF50;
     }
 
-</style>
+    nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* ensures the nav stays on top of other content */
+    background-color: #6050DC; /* or whatever your nav background color is; this ensures the content behind doesn't show through */
+    }
 
+    body {
+    padding-top: 80px; /* Adjust based on the height of your nav */
+    }
+
+    .mega-menu {
+    width: 100vw;  /* Adjust as needed. */
+    max-width: 600px; /* Max width can be adjusted as per requirement. */
+    padding: 20px; /* Optional padding for better appearance. */
+    margin-top: 20px; /* Adjust this value to set the desired space below the dropdown button */
+    }
+
+    .dropdown-item img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .mega-menu .row {
+    margin-bottom: 15px; /* Adjust this value for desired gap between rows */
+    }
+
+    /* This is to remove the margin-bottom for the last row */
+    .mega-menu .row:last-child {
+        margin-bottom: 0;
+    }
+
+    /* For larger screen sizes, you can adjust image sizes or the number of images per row */
+    @media (min-width: 992px) {
+    .mega-menu .row .col-3 {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+    }
+</style>
 
 <body>
 
@@ -92,28 +132,26 @@
             <nav class="navbar navbar-expand-lg bg-body-tertiary nav">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown">
-                        <div class="btn-group">
-                        <button type="button" class="btn white-text">
-                            <a href="{% url 'dog_products' %}" class="category-link white-text">Dog</a>
-                        </button>
-                        <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{% url 'beds_and_mats_products' %}">Beds & Mats</a></li>
-                        <li><a class="dropdown-item" href="{% url 'food_products' %}">Food</a></li>
-                        <li><a class="dropdown-item" href="{% url 'healthcare_products' %}">Healthcare</a></li>
-                        <li><a class="dropdown-item" href="{% url 'treats_and_chews_products' %}">Treats & Chews</a></li>
-                        <li><a class="dropdown-item" href="{% url 'bowls_feeders_products' %}">Bowls</a></li>
-                        <li><a class="dropdown-item" href="{% url 'collar_leashes_products' %}">Collar & Leashes</a></li>
-                        <li><a class="dropdown-item" href="{% url 'training_aids_products' %}">Training Aids</a></li>
-                        <li><a class="dropdown-item" href="{% url 'grooming_supplies_products' %}">Grooming Supplies</a></li>
-                        <li><a class="dropdown-item" href="{% url 'toys_products' %}">Toys</a></li>
-                        <li><a class="dropdown-item" href="{% url 'crates_carriers_products' %}">Crates & Carriers</a></li>
-                        </ul>
-                        </div>
-                    </li>
+                        <li class="nav-item dropdown">
+                            <div class="btn-group">
+                                <button type="button" class="btn dropdown-toggle white-text" data-bs-toggle="dropdown" aria-expanded="false" onmouseover="this.click();" onmouseout="this.blur();">
+                                    <a href="{% url 'dog_products' %}" class="category-link white-text">Dog</a>
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'beds_and_mats_products' %}">Beds & Mats</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'food_products' %}">Food</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'healthcare_products' %}">Healthcare</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'treats_and_chews_products' %}">Treats & Chews</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'bowls_feeders_products' %}">Bowls</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'collar_leashes_products' %}">Collar & Leashes</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'training_aids_products' %}">Training Aids</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'grooming_supplies_products' %}">Grooming Supplies</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'toys_products' %}">Toys</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'crates_carriers_products' %}">Crates & Carriers</a></li>
+                                </ul>
+                            </div>
+                        </li>
                     <li class="nav-item dropdown">
                         <div class="btn-group">
                             <button type="button" class="btn white-text">
@@ -160,49 +198,51 @@
                             <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                 <span class="visually-hidden">Toggle Dropdown</span>
                             </button>
-                            <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">
-                                <img src="{% static 'css/Pedigree.jpg' %}" class="img-fluid rounded-start" alt="Pedigree">
-                                </a>
-                            </li>
-                            <li><a class="dropdown-item" href="#">
-                                <img src="{% static 'css/Whiskas.jpg' %}" class="img-fluid rounded-start" alt="Whiskas">
-                                </a>
-                            </li>
-                            <li><a class="dropdown-item" href="#">
-                                <img src="{% static 'css/Royal Canin.jpg' %}" class="img-fluid rounded-start" alt="Royal Canin">
-                                </a>
-                            </li>
-                            <li><a class="dropdown-item" href="#">
-                                <img src="{% static 'css/Drools.jpg' %}" class="img-fluid rounded-start" alt="Drools">
-                                </a>
-                            </li>
-                            <li><a class="dropdown-item" href="#">
-                                <img src="{% static 'css/Farmina.jpg' %}" class="img-fluid rounded-start" alt="Farmina">
-                                </a>
-                            </li>
-                            <li><a class="dropdown-item" href="#">
-                                <img src="{% static 'css/Sheba.jpg' %}" class="img-fluid rounded-start" alt="Sheba">
-                                </a>
-                            </li>
-                            </ul>
+                            <div class="dropdown-menu mega-menu">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <a href="#"><img src="{% static 'css/Pedigree.jpg' %}" class="img-fluid rounded-start" alt="Pedigree"></a>
+                                    </div>
+                                    <div class="col-3">
+                                        <a href="#"><img src="{% static 'css/Whiskas.jpg' %}" class="img-fluid rounded-start" alt="Whiskas"></a>
+                                    </div>
+                                    <div class="col-3">
+                                        <a href="#"><img src="{% static 'css/Royal Canin.jpg' %}" class="img-fluid rounded-start" alt="Royal Canin"></a>
+                                    </div>
+                                    <div class="col-3">
+                                        <a href="#"><img src="{% static 'css/Drools.jpg' %}" class="img-fluid rounded-start" alt="Drools"></a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <a href="#"><img src="{% static 'css/Farmina.jpg' %}" class="img-fluid rounded-start" alt="Farmina"></a>
+                                    </div>
+                                    <div class="col-3">
+                                        <a href="#"><img src="{% static 'css/Sheba.jpg' %}" class="img-fluid rounded-start" alt="Sheba"></a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </li>
+                    
+                    
                     </ul>
-                    <form action="{% url 'search_results' %}" method="get" class="d-flex" role="search">
-                        <input type="text" name="query" class="form-control me-2" placeholder="Search products..." aria-label="Search">
-                        <button type="submit" class="btn btn-primary search-btn">Search</button>
-                    </form>
                 </div>
                 </div>
             </nav>
         </ul>
+
+        <div class="col-lg-4 col-md-6">
+            <form action="{% url 'search_results' %}" method="get" class="d-flex" role="search">
+                <input type="text" name="query" class="form-control me-2" placeholder="Search products..." aria-label="Search">
+                <button type="submit" class="btn btn-primary search-btn">Search</button>
+            </form>
+        </div>
         
         <div class="header-menu">
 
             {% if request.user.is_authenticated %}
             <div class="user-section d-inline-flex align-items-center">
-                <i class="bi bi-person-circle mr-3"></i>  <!-- increased margin here -->
                 <div class="dropdown">
                     <button class="text-white bg-transparent shadow-none border-0 dropdown-toggle" type="button"
                             id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -217,7 +257,6 @@
             </div>
             {% else %}
             <div class="login-section d-inline-flex align-items-center">
-                <i class="bi bi-person-circle mr-3"></i>  <!-- increased margin here -->
                 <a href="{% url 'login' %}">Login</a>
             </div>
             {% endif %}
@@ -246,47 +285,50 @@
             </div>
             {% endif %}
         </div>
-        
-        
     </nav>
 
     {% if messages %}
 
     {% for message in messages %}
 
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-          <img src="..." class="rounded me-2" alt="...">
-          <strong class="me-auto">PawSome</strong>
-          <small>Just Now</small>
-          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-            {{message}}
-        </div>
-    </div>
-
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+       {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    
     {% endfor %}
-
-    <script>
-        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
-        var toastList = toastElList.map(function (toastEl) {
-            var toast = new bootstrap.Toast(toastEl)
-            toast.show();
-            return toast;
-        });
-    </script>
-
+        
     {% endif %}
+    
+     {% block content %}
+        
+     {% endblock content %}
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-    {% block content %}
+   <script src="{% static 'js/script.js' %}"></script>
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery if not already included -->
+<script>
+    $(document).ready(function() {
+        var closeTimeout;
 
-    {% endblock content %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+        $('.dropdown-toggle').on('mouseenter', function() {
+            clearTimeout(closeTimeout);
+            $(this).dropdown('show');
+        }).on('mouseleave', function() {
+            closeTimeout = setTimeout(function() {
+                $('.dropdown-toggle').dropdown('hide');
+            }, 600);
+        });
 
-    <script src="{% static 'js/script.js' %}"></script>
+        $('.dropdown-menu').on('mouseenter', function() {
+            clearTimeout(closeTimeout);
+        }).on('mouseleave', function() {
+            closeTimeout = setTimeout(function() {
+                $('.dropdown-toggle').dropdown('hide');
+            }, 600);
+        });
+    });
+</script>
+
 </body>
-
 </html>

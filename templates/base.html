@@ -117,6 +117,100 @@
         max-width: 25%;
     }
     }
+
+        /* NAVIGATION */
+
+    nav ul li a {
+
+    display: block;
+    padding: 5px;
+    text-decoration: none;
+    color: #aaa;
+    margin: 0 2px;
+    }
+    
+    nav ul li a,
+    nav ul li a:after,
+    nav ul li a:before {
+    transition: all .5s;
+    }
+
+    nav ul li a:hover {
+    color: #555;
+    }
+
+    /* SHIFT */
+    nav.shift ul li .btn.dropdown-toggle {
+        position: relative;
+        z-index: 1;
+        transition: all .5s;
+        color: #fff;
+    }
+
+    nav.shift ul li .btn.dropdown-toggle:hover {
+        color: #ffffff;
+    }
+
+    nav.shift ul li .btn.dropdown-toggle:after {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        width: 100%;
+        height: 1px;
+        content: '.';
+        color: transparent;
+        background: #aa00ff;
+        visibility: hidden;
+        opacity: 0;
+        z-index: -1;
+    }
+
+    nav.shift ul li .btn.dropdown-toggle:hover:after {
+        opacity: 1;
+        visibility: visible;
+        height: 100%;
+    
+    }
+
+    nav.shift ul li a {
+        position: relative;
+        z-index: 1;
+        transition: all .5s;
+        color: rgb(0, 0, 0);
+    }
+
+    nav.shift ul li a:hover {
+        color: #ffffff;
+    }
+    
+    nav.shift ul li a:after {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        width: 100%;
+        height: 1px;
+        content: '.';
+        color: transparent;
+        background: #aa00ff;
+        visibility: hidden;
+        opacity: 0;
+        z-index: -1;
+    }
+    
+    nav.shift ul li a:hover:after {
+        opacity: 1;
+        visibility: visible;
+        height: 100%;
+    }
+
 </style>
 
 <body>
@@ -129,15 +223,14 @@
         </div>
         
         <ul class="nav nav-underline">
-            <nav class="navbar navbar-expand-lg bg-body-tertiary nav">
+            <nav class="navbar navbar-expand-lg bg-body-tertiary shift">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown">
                             <div class="btn-group">
                                 <button type="button" class="btn dropdown-toggle white-text" data-bs-toggle="dropdown" aria-expanded="false" onmouseover="this.click();" onmouseout="this.blur();">
-                                    <a href="{% url 'dog_products' %}" class="category-link white-text">Dog</a>
-                                    <span class="visually-hidden">Toggle Dropdown</span>
-                                </button>
+                                    Dog <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>                                
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="{% url 'beds_and_mats_products' %}">Beds & Mats</a></li>
                                     <li><a class="dropdown-item" href="{% url 'food_products' %}">Food</a></li>
@@ -152,28 +245,24 @@
                                 </ul>
                             </div>
                         </li>
+
                     <li class="nav-item dropdown">
                         <div class="btn-group">
-                            <button type="button" class="btn white-text">
-                                <a href="{% url 'cat_products' %}" class="category-link white-text">Cat</a>
-                            </button>
-                            <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="visually-hidden">Toggle Dropdown</span>
+                            <button type="button" class="btn dropdown-toggle white-text" data-bs-toggle="dropdown" aria-expanded="false" onmouseover="this.click();" onmouseout="this.blur();">
+                                Cat <span class="visually-hidden">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Food</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Bed</a></li>
+                                <li><a class="dropdown-item" href="#">Food</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">Bed</a></li>
                             </ul>
-                            </div>
+                        </div>
                     </li>
+
                     <li class="nav-item dropdown">
                         <div class="btn-group">
-                            <button type="button" class="btn white-text">
-                                <a href="#" class="category-link white-text">New Paw Parent</a>
-                            </button>
-                            <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="visually-hidden">Toggle Dropdown</span>
+                            <button type="button" class="btn dropdown-toggle white-text" data-bs-toggle="dropdown" aria-expanded="false" onmouseover="this.click();" onmouseout="this.blur();">
+                                New Paw Parent <span class="visually-hidden">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">
@@ -190,13 +279,11 @@
                             </ul>
                         </div>
                     </li>
+
                     <li class="nav-item dropdown">
                         <div class="btn-group">
-                            <button type="button" class="btn white-text">
-                                <a href="#" class="category-link white-text">Shop by Brand</a>
-                            </button>
-                            <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="visually-hidden">Toggle Dropdown</span>
+                            <button type="button" class="btn dropdown-toggle white-text" data-bs-toggle="dropdown" aria-expanded="false" onmouseover="this.click();" onmouseout="this.blur();">
+                                Shop by Brand <span class="visually-hidden">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu mega-menu">
                                 <div class="row">
@@ -308,26 +395,25 @@
    <script src="{% static 'js/script.js' %}"></script>
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery if not already included -->
 <script>
-    $(document).ready(function() {
-        var closeTimeout;
+$(document).ready(function() {
+    var closeTimeout;
 
-        $('.dropdown-toggle').on('mouseenter', function() {
-            clearTimeout(closeTimeout);
-            $(this).dropdown('show');
-        }).on('mouseleave', function() {
-            closeTimeout = setTimeout(function() {
-                $('.dropdown-toggle').dropdown('hide');
-            }, 600);
-        });
-
-        $('.dropdown-menu').on('mouseenter', function() {
-            clearTimeout(closeTimeout);
-        }).on('mouseleave', function() {
-            closeTimeout = setTimeout(function() {
-                $('.dropdown-toggle').dropdown('hide');
-            }, 600);
-        });
+    $('.dropdown-toggle').on('mouseenter', function() {
+        clearTimeout(closeTimeout); // Clear any existing timeout to ensure dropdown stays open
+        $(this).dropdown('show');   // Show the dropdown when hovered
     });
+
+    $('.dropdown-toggle, .dropdown-menu').on('mouseleave', function() {
+        var dropdownElem = $(this);
+        closeTimeout = setTimeout(function() {
+            dropdownElem.parent().find('.dropdown-toggle').dropdown('hide');
+        }, 100); // Hide the dropdown after 400ms delay
+    });
+
+    $('.dropdown-menu').on('mouseenter', function() {
+        clearTimeout(closeTimeout); // Clear the timeout if menu is hovered, to ensure dropdown stays open
+    });
+});
 </script>
 
 </body>

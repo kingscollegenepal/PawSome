@@ -43,6 +43,12 @@
         text-decoration: none;
     }
 
+    .custom-card:hover {
+        background-color: #f0f0f0; /* Change the background color on hover */
+        /* Add any other style changes that don't affect the size */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for visual effect */
+    }
+
     .rating {
     display: flex;
     flex-direction: row-reverse;  /* Display labels in reverse order */
@@ -231,20 +237,90 @@
                                 <button type="button" class="btn dropdown-toggle white-text" data-bs-toggle="dropdown" aria-expanded="false" onmouseover="this.click();" onmouseout="this.blur();">
                                     Dog <span class="visually-hidden">Toggle Dropdown</span>
                                 </button>                                
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{% url 'beds_and_mats_products' %}">Beds & Mats</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'food_products' %}">Food</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'healthcare_products' %}">Healthcare</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'treats_and_chews_products' %}">Treats & Chews</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'bowls_feeders_products' %}">Bowls</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'collar_leashes_products' %}">Collar & Leashes</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'training_aids_products' %}">Training Aids</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'grooming_supplies_products' %}">Grooming Supplies</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'toys_products' %}">Toys</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'crates_carriers_products' %}">Crates & Carriers</a></li>
-                                </ul>
+                                <div class="dropdown-menu mega-menu">
+                                    <div class="row">
+                                        <!-- First Card -->
+                                        <div class="col-md-4" style="padding: 5px;"> 
+                                            <!-- Card Content Here -->
+                                            <a href="{% url 'beds_and_mats_products' %}">
+                                                <div class="card mb-2 product-card" style="max-width: 280px;">
+                                                    <div class="row g-0">
+                                                        <div class="col-md-6">
+                                                            <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog" style="margin: 0;"> 
+                                                        </div>
+                                                        <div class="col-md-6 d-flex align-items-center justify-content-center"> <!-- Add flexbox classes -->
+                                                            <div class="card-body" style="padding: 8px;">
+                                                                <h5 class="card-title" style="color: black; font-size: 14px; margin: 0;">Beds and Mats</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        
+                                        <!-- Second Card -->
+                                        <div class="col-md-4" style="padding: 5px;"> 
+                                            <!-- Card Content Here -->
+                                            <a href="{% url 'beds_and_mats_products' %}">
+                                                <div class="card mb-2 product-card" style="max-width: 280px;">
+                                                    <div class="row g-0">
+                                                        <div class="col-md-6">
+                                                            <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog" style="margin: 0;"> 
+                                                        </div>
+                                                        <div class="col-md-6 d-flex align-items-center justify-content-center"> <!-- Add flexbox classes -->
+                                                            <div class="card-body" style="padding: 8px;">
+                                                                <h5 class="card-title" style="color: black; font-size: 14px; margin: 0;">Beds and Mats</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        
+                                        <!-- Third Card -->
+                                        <div class="col-md-4" style="padding: 5px;"> 
+                                            <!-- Card Content Here -->
+                                            <a href="{% url 'beds_and_mats_products' %}">
+                                                <div class="card mb-2 product-card" style="max-width: 280px;">
+                                                    <div class="row g-0">
+                                                        <div class="col-md-6">
+                                                            <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog" style="margin: 0;"> 
+                                                        </div>
+                                                        <div class="col-md-6 d-flex align-items-center justify-content-center"> <!-- Add flexbox classes -->
+                                                            <div class="card-body" style="padding: 8px;">
+                                                                <h5 class="card-title" style="color: black; font-size: 14px; margin: 0;">Beds and Mats</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                        <!-- Fourth Card -->
+                                        <div class="col-md-4" style="padding: 5px;"> 
+                                            <!-- Card Content Here -->
+                                            <a href="{% url 'beds_and_mats_products' %}">
+                                                <div class="card mb-2 product-card" style="max-width: 280px;">
+                                                    <div class="row g-0">
+                                                        <div class="col-md-6">
+                                                            <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog" style="margin: 0;"> 
+                                                        </div>
+                                                        <div class="col-md-6 d-flex align-items-center justify-content-center"> <!-- Add flexbox classes -->
+                                                            <div class="card-body" style="padding: 8px;">
+                                                                <h5 class="card-title" style="color: black; font-size: 14px; margin: 0;">Beds and Mats</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
                         </li>
+
+                        
 
                     <li class="nav-item dropdown">
                         <div class="btn-group">
@@ -338,13 +414,13 @@
         
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="{% url 'customerprofile' %}">My Profile</a>
-                        <a class="dropdown-item" href="logout">Logout</a>
+                        <a href="{% url 'logout' %}?next={{ request.path }} " class="dropdown-item">Logout</a>
                     </div>
                 </div>
             </div>
             {% else %}
             <div class="login-section d-inline-flex align-items-center">
-                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'login' %}?next={{ request.path }}">Login</a>
             </div>
             {% endif %}
         

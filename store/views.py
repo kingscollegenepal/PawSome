@@ -17,6 +17,7 @@ from math import floor
 from django.contrib.auth.models import User, auth
 from .forms import registrationform
 from django.contrib.auth.forms import UserCreationForm
+from django.utils.http import url_has_allowed_host_and_scheme
 
 
 # pylint: disable=missing-function-docstring
@@ -191,10 +192,25 @@ def search_results(request):
         Q(category__icontains=query) | 
         Q(subcategory__icontains=query)
     )
+
+    for product in products:
+        average_rating = product.ratings.aggregate(avg_rating=Avg('value'))['avg_rating']
+        if average_rating is None:
+            average_rating = 0
+
+        floor_rating = floor(average_rating)
+        half_star = 0.5 <= average_rating - floor_rating < 1
+
+        # Attach the ratings to the product object for easier access in the template
+        product.average_rating = average_rating
+        product.floor_rating = floor_rating
+        product.half_star = half_star
+
     context = {
         'products': products,
         'query': query  # Add this line
     }
+
     return render(request, 'search_results.html', context)
 
 def dog_products(request):
@@ -367,9 +383,15 @@ class KhaltiVerifyView(View):
         return JsonResponse(data)
 
 def login(request):
+    if request.method == "GET":
+        # Store the 'next' parameter in the session
+        next_url = request.GET.get('next', '/')
+        request.session['next'] = next_url
+        
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
+        # The rest of your login logic ...
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         user = auth.authenticate(username=username, password=password)
         
         if user is not None:
@@ -379,14 +401,8 @@ def login(request):
             # Redirect to the URL stored in session or default to home page
             next_url = request.session.pop('next', '/')
             return redirect(next_url)
-        else:
-            if not User.objects.filter(username=username).exists():
-                messages.error(request, "Username Doesn't Exist")
-            else:
-                messages.info(request, "Incorrect Password")
-            return render(request, 'index.html')
-    else:
-        return render(request, 'index.html')
+        
+    return render(request, 'index.html')
 
 
 
@@ -406,16 +422,20 @@ def register(request):
         form = registrationform()
     return render(request, 'register.html', {'form':form})
 
+from django.http import QueryDict
+
 def logout(request):
-    # Save the referrer URL in the session before logging out
-    referer_url = request.META.get('HTTP_REFERER', '/')
-    request.session['next'] = referer_url
+    next_url = request.GET.get('next', None)
+
+    if next_url is None:
+        next_url = request.META.get('HTTP_REFERER', '/')
     
-    # Log out the user
+    # Validate the next_url
+    if not url_has_allowed_host_and_scheme(url=next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
+        next_url = '/'
+    
     auth.logout(request)
-    
-    # Redirect to the home page (which renders index.html)
-    return render(request, 'home.html')
+    return redirect(next_url)
 
 def success(request):
     return render(request, 'success.html')

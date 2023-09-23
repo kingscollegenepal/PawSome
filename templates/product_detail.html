@@ -33,7 +33,7 @@
                     {% if request.user.is_authenticated %}
                         <button class="btn btn-primary addToCartBtn" value="{{product.id}}" style="background-color: #6050DC">Add to Cart</button>
                     {% else %}
-                        <h3><a href="{% url 'login' %}" class="btn btn-primary" style="background-color: #6050DC">Login to Add to Cart</a></h3>
+                        <h3><a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary" style="background-color: #6050DC">Login to Add to Cart</a></h3>
                     {% endif %}
                 </div>
 

@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "django.contrib.staticfiles",
     'store',
-    'register.apps.RegisterConfig',
 ]
 
 MIDDLEWARE = [

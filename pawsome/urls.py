@@ -23,9 +23,6 @@ from store import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('register', include("register.urls")),
-    path('', include("login.urls")),
-    path('logout/', include("login.urls")),
     path('', include("store.urls")),
 ]
 

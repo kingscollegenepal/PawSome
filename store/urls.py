@@ -28,6 +28,11 @@ urlpatterns = [
     path('dog-products/<int:product_id>/', views.product_detail, name="product_detail"),
     path('cat-products/<int:product_id>/', views.product_detail, name="product_detail"),
     path('search/', views.search_results, name='search_results'),
+    path('login/', views.login, name = "login"),
+    path('logout/', views.logout, name="logout"),
+    path('register/', views.register, name = "register"),
 ]
+
+
 
 

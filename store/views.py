@@ -14,7 +14,9 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.paginator import Paginator
 from math import floor
-
+from django.contrib.auth.models import User, auth
+from .forms import registrationform
+from django.contrib.auth.forms import UserCreationForm
 
 
 # pylint: disable=missing-function-docstring
@@ -235,7 +237,6 @@ def bowls_feeders_products(request):
     context = {"products": bowls_feeders_products}
     return render(request, "bowls_feeders_products.html", context)
 
-
 def toys_products(request):
     """Display all dog pen products."""
     toys_products = Product.objects.filter(category='Dog', subcategory='Toys')
@@ -266,6 +267,7 @@ def crates_and_carriers_products(request):
     context = {"products": crates_and_carriers_products}
     return render(request, "crates_and_carriers_products.html", context)
 
+
 def cat_products(request):
     """Display all cat products."""
     cat_products = Product.objects.filter(category='Cat')
@@ -284,6 +286,7 @@ def cat_products(request):
 
     context = {"products": cat_products}
     return render(request, "cat_products.html", context)
+
 
 def checkout(request):
     cart = None
@@ -321,6 +324,7 @@ def checkout(request):
     context = {"form": form, "cart": cart, "items": cartitems}
     return render(request, "checkout.html", context)
 
+
 class KhaltiRequestView(View):
     def get(self, request, *args, **kwargs):
         o_id = request.GET.get("o_id")
@@ -330,6 +334,7 @@ class KhaltiRequestView(View):
         }
         return render(request, "khaltirequest.html", context)
     
+
 class KhaltiVerifyView(View):
     def get(self, request, *args, **kwargs):
         token = request.GET.get("token")
@@ -360,5 +365,61 @@ class KhaltiVerifyView(View):
             "success": success
         }
         return JsonResponse(data)
+
+def login(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = auth.authenticate(username=username, password=password)
+        
+        if user is not None:
+            auth.login(request, user)
+            messages.success(request, f"Hello {username}, You Are Successfully Logged In")
+            
+            # Redirect to the URL stored in session or default to home page
+            next_url = request.session.pop('next', '/')
+            return redirect(next_url)
+        else:
+            if not User.objects.filter(username=username).exists():
+                messages.error(request, "Username Doesn't Exist")
+            else:
+                messages.info(request, "Incorrect Password")
+            return render(request, 'index.html')
+    else:
+        return render(request, 'index.html')
+
+
+
+def register(request):
+    if request.method=='POST':
+        form = registrationform(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            # password1 = form.cleaned_data.get('password1')
+            # user = auth.authenticate(username=username,password=password1)
+            # auth.login(request, user)
+            messages.info(request, f'Hello {username}, You are Successfully Registered!!') 
+            return render(request, 'success.html',)
+            form = registrationform()
+    else:
+        form = registrationform()
+    return render(request, 'register.html', {'form':form})
+
+def logout(request):
+    # Save the referrer URL in the session before logging out
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    request.session['next'] = referer_url
     
+    # Log out the user
+    auth.logout(request)
+    
+    # Redirect to the home page (which renders index.html)
+    return render(request, 'home.html')
+
+def success(request):
+    return render(request, 'success.html')
+
+
+
 

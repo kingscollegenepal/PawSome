@@ -43,7 +43,7 @@ function addToCart(e){
     .catch(error=>{
         console.log(error);
     })
-
-    
 }
+
+
 

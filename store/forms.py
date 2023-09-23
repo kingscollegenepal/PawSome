@@ -2,14 +2,17 @@ from django import forms
 from .models import Order, Product, Review
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.core.validators import RegexValidator
 
 
 class CheckoutForm(forms.ModelForm):
-
     ordered_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Full Name'}))
-    shipping_address = forms.CharField(widget=forms.Textarea(attrs={'rows': 3,'class': 'form-control', 'placeholder': 'Shipping Address'}))
-    mobile = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder': '10-digit Mobile Number'}))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control','placeholder': 'Email Address'}))
+    shipping_address = forms.CharField(widget=forms.Textarea(attrs={'rows': 3, 'class': 'form-control', 'placeholder': 'Shipping Address'}))
+    mobile = forms.CharField(
+        validators=[RegexValidator(r'^\d{10}$', message="Mobile number must be entered in the format: '9999999999'. Up to 10 digits allowed.")],
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '10-digit Mobile Number'})
+    )
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}))
     payment_method = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=Order.payment_method.field.choices)
 
     

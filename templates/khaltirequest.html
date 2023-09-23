@@ -4,6 +4,85 @@
 
 {% block content %}
 <html>
+    <style>
+
+        .stepper-wrapper {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .stepper-item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    
+      @media (max-width: 768px) {
+        font-size: 12px;
+      }
+    }
+    
+    .stepper-item::before {
+      position: absolute;
+      content: "";
+      border-bottom: 2px solid #ccc;
+      width: 100%;
+      top: 20px;
+      left: -50%;
+      z-index: 2;
+    }
+    
+    .stepper-item::after {
+      position: absolute;
+      content: "";
+      border-bottom: 2px solid #ccc;
+      width: 100%;
+      top: 20px;
+      left: 50%;
+      z-index: 2;
+    }
+    
+    .stepper-item .step-counter {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #ccc;
+      margin-bottom: 6px;
+    }
+    
+    .stepper-item.active {
+      font-weight: bold;
+    }
+    
+    .stepper-item.completed .step-counter {
+      background-color: #4bb543;
+    }
+    
+    .stepper-item.completed::after {
+      position: absolute;
+      content: "";
+      border-bottom: 2px solid #4bb543;
+      width: 100%;
+      top: 20px;
+      left: 50%;
+      z-index: 3;
+    }
+    
+    .stepper-item:first-child::before {
+      content: none;
+    }
+    .stepper-item:last-child::after {
+      content: none;
+    }
+    </style>
+    
 <head>
     <script src="https://unpkg.com/khalti-checkout-web@latest/dist/khalti-checkout.iffe.js"></script>
 </head>
@@ -21,8 +100,24 @@
 
 
     <button id="payment-button">Pay with Khalti</button>
-    <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-        <div class="progress-bar" style="width: 75%">75%</div>
+
+    <div class="stepper-wrapper">
+        <div class="stepper-item completed" id="step2">
+          <div class="step-counter">1</div>
+          <div class="step-name">Cart</div>
+        </div>
+        <div class="stepper-item completed" id="step1">
+          <div class="step-counter">2</div>
+          <div class="step-name">Checkout</div>
+        </div>
+        <div class="stepper-item completed" id="step3">
+            <div class="step-counter">3</div>
+            <div class="step-name">Payment</div>
+        </div>
+        <div class="stepper-item active" id="step4">
+            <div class="step-counter">4</div>
+            <div class="step-name">Order Placed</div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -60,9 +155,15 @@
                     }).then(function(resp){
                         hideLoadingSpinner();
                         if (resp.data.success == true){
-                            alert("Thanks. Payment Completed Successfully")
-                            location.href = "/"
-                            
+                            alert("Thanks. Payment Completed Successfully");
+
+                            // Update the classes of the stepper items
+                            document.getElementById("step1").classList.add("completed");
+                            document.getElementById("step2").classList.add("completed");
+                            document.getElementById("step3").classList.add("completed");
+                            document.getElementById("step4").classList.add("active");
+
+                            location.href = "/";   
                         }else{
                             alert("Sorry. Error occurred")
                             location.href = "{{request.build_absolute_uri}}"
@@ -107,3 +208,16 @@
   </style>
 
 {% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+

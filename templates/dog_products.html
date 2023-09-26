@@ -17,6 +17,36 @@
     height: 100%;
     object-fit: cover;
     }
+
+    .product-card {
+        height: 200px; /* Adjust as needed */
+    }
+    .product-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+    .row {
+    display: flex;
+    align-items: stretch;
+    }
+  
+    .card {
+    height: 100%;
+    }
+
+    .padded-row {
+    padding-right: 60px; /* Adjust the value as needed */
+    padding-left: 60px; /* Adjust the value as needed */
+    padding-bottom: 20px; /* Adjust the value as needed */
+    }
+
+    .padde-row {
+    padding-top: 60px; /* Adjust the value as needed */
+    padding-right: 60px; /* Adjust the value as needed */
+    padding-left: 60px; /* Adjust the value as needed */
+    }
+
 </style>
 
 <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
@@ -36,148 +66,180 @@
 </div>
 
 
+<div class="row g-4 padde-row">
+  <h2> Shop by Categories</h2>
+</div>
 
-<h2>Dog Products</h2>
-<h3>Shop by Categories</h3>
-
-<div class="container mt-5">
-
-    <a href="{% url 'beds_and_mats_products' %}">
-    <div class="card mb-2 product-card" style="max-width: 540px;">
-        <div class="row g-0">
-          <div class="col-md-2">
-            <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
-          </div>
-          <div class="col-md-4">
-            <div class="card-body">
-                <h5 class="card-title" style = "color:black ;">Beds and Mats</h5>
-            </div>
-          </div>
-        </div>
+  <div class="row g-4 padded-row">
+    <!-- First Row of Cards -->
+    <!-- First Card -->
+    <div class="col-md-4">
+      <a href="{% url 'dog_beds_and_mats_products' %}">
+                <div class="card mb-2 product-card">
+                  <div class="row g-0 h-100">
+                    <div class="col-md-6 d-flex align-items-center">
+                      <img src="{% static 'css/dog-beds.jpg' %}" class="img-fluid rounded-start" alt="Alt Text" style="object-fit: cover; aspect-ratio: 1;">
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center justify-content-center">
+                        <div class="card-body" style="padding: 8px;">
+                            <h5 class="card-title" style="color: black;">Beds and Mats</h5>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+      </a>
     </div>
-    </a>
-
-    <a href="{% url 'healthcare_products' %}">
-        <div class="card mb-2 product-card" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-2">
-                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
+    
+    <!-- Second Card -->
+    <div class="col-md-4">
+      <a href="{% url 'dog_healthcare_products' %}">
+        <div class="card mb-2 product-card h-100"">
+              <div class="row g-0 h-100">
+                  <div class="col-md-6 d-flex align-items-center">
+                      <img src="{% static 'css/dog-healthcare.jpg' %}" class="img-fluid rounded-start" alt="Alt Text" style="object-fit: cover; aspect-ratio: 1;">
+                  </div>
+                  <div class="col-md-6 d-flex align-items-center justify-content-center">
+                      <div class="card-body" style="padding: 8px;">
+                          <h5 class="card-title" style="color: black;">Healthcare</h5>
+                      </div>
+                  </div>
               </div>
-              <div class="col-md-4">
-                <div class="card-body">
-                    <h5 class="card-title" style = "color:black ;">Healthcare</h5>
+          </div>
+      </a>
+  </div>
+    
+    <!-- Third Card -->
+    <div class="col-md-4">
+      <a href="{% url 'dog_treats_and_chews_products' %}">
+        <div class="card mb-2 product-card h-100">
+              <div class="row g-0 h-100">
+                  <div class="col-md-6 d-flex align-items-center">
+                      <img src="{% static 'css/dog-treats.jpg' %}" class="img-fluid rounded-start" alt="Alt Text" style="object-fit: cover; aspect-ratio: 1;">
+                  </div>
+                  <div class="col-md-6 d-flex align-items-center justify-content-center">
+                      <div class="card-body" style="padding: 8px;">
+                          <h5 class="card-title" style="color: black;">Treats & Chews</h5>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </a>
+  </div>
+  </div>
+
+  <div class="row g-4 padded-row">
+    <!-- Second Row of Cards -->
+    <!-- Fourth Card -->
+    <div class="col-md-4">
+        <a href="{% url 'dog_food_products' %}">
+          <div class="card mb-2 product-card h-100">
+                <div class="row g-0 h-100">
+                    <div class="col-md-6 d-flex align-items-center">
+                        <img src="{% static 'css/dog-food.jpg' %}" class="img-fluid rounded-start" alt="Cat" style="object-fit: cover; aspect-ratio: 1;">
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center justify-content-center">
+                        <div class="card-body" style="padding: 8px;">
+                            <h5 class="card-title" style="color: black;">Food</h5>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-        </div>
-    </a>
-
-    <a href="{% url 'treats_and_chews_products' %}">
-        <div class="card mb-2 product-card" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-2">
-                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
-              </div>
-              <div class="col-md-4">
-                <div class="card-body">
-                    <h5 class="card-title" style = "color:black ;">Treats & Chews</h5>
+        </a>
+    </div>
+    
+    <!-- Fifth Card -->
+    <div class="col-md-4">
+        <a href="{% url 'dog_bowls_feeders_products' %}">
+          <div class="card mb-2 product-card h-100">
+                <div class="row g-0 h-100">
+                    <div class="col-md-6 d-flex align-items-center">
+                        <img src="{% static 'css/dog-bowls.jpg' %}" class="img-fluid rounded-start" alt="Cat" style="object-fit: cover; aspect-ratio: 1;">
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center justify-content-center">
+                        <div class="card-body" style="padding: 8px;">
+                            <h5 class="card-title" style="color: black;">Bowls & Feeders</h5>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-        </div>
-    </a>
-
-    <a href="{% url 'food_products' %}">
-        <div class="card mb-2 product-card" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-2">
-                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
-              </div>
-              <div class="col-md-4">
-                <div class="card-body">
-                    <h5 class="card-title" style = "color:black ;">Food</h5>
+        </a>
+    </div>
+    
+    <!-- Sixth Card -->
+    <div class="col-md-4">
+        <a href="{% url 'dog_toys_products' %}">
+          <div class="card mb-2 product-card h-100">
+                <div class="row g-0 h-100">
+                    <div class="col-md-6 d-flex align-items-center">
+                        <img src="{% static 'css/dog-toys.jpg' %}" class="img-fluid rounded-start" alt="Alt Text" style="object-fit: cover; aspect-ratio: 1;">
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center justify-content-center">
+                        <div class="card-body" style="padding: 8px;">
+                            <h5 class="card-title" style="color: black;">Toys</h5>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-        </div>
-    </a>
-
-    <a href="{% url 'bowls_feeders_products' %}">
-        <div class="card mb-2 product-card" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-2">
-                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
-              </div>
-              <div class="col-md-4">
-                <div class="card-body">
-                    <h5 class="card-title" style = "color:black ;">Bowls & Feeders</h5>
-                </div>
-              </div>
-            </div>
-        </div>
-    </a>
-
-    <a href="{% url 'toys_products' %}">
-        <div class="card mb-2 product-card" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-2">
-                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
-              </div>
-              <div class="col-md-4">
-                <div class="card-body">
-                    <h5 class="card-title" style = "color:black ;">Toys</h5>
-                </div>
-              </div>
-            </div>
-        </div>
-    </a>
-
-    <a href="{% url 'collar_leashes_products' %}">
-        <div class="card mb-2 product-card" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-2">
-                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
-              </div>
-              <div class="col-md-4">
-                <div class="card-body">
-                    <h5 class="card-title" style = "color:black ;">Collar Leashes</h5>
-                </div>
-              </div>
-            </div>
-        </div>
-    </a>
-
-    <a href="{% url 'training_aids_products' %}">
-        <div class="card mb-2 product-card" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-2">
-                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
-              </div>
-              <div class="col-md-4">
-                <div class="card-body">
-                    <h5 class="card-title" style = "color:black ;">Training Aids</h5>
-                </div>
-              </div>
-            </div>
-        </div>
-    </a>
-
-    <a href="{% url 'grooming_supplies_products' %}">
-        <div class="card mb-2 product-card" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-2">
-                <img src="{% static 'css/Dog.jpg' %}" class="img-fluid rounded-start" alt="Dog">
-              </div>
-              <div class="col-md-4">
-                <div class="card-body">
-                    <h5 class="card-title" style = "color:black ;">Grooming Supplies</h5>
-                </div>
-              </div>
-            </div>
-        </div>
-    </a>
+        </a>
+    </div>
+  </div>
 
 
-
+    <div class="row g-4 padded-row">
+      <!-- Third Row of Cards -->
+      <!-- Seventh Card -->
+      <div class="col-md-4">
+          <a href="{% url 'dog_collar_leashes_products' %}">
+            <div class="card mb-2 product-card h-100">
+                  <div class="row g-0 h-100">
+                      <div class="col-md-6 d-flex align-items-center">
+                          <img src="{% static 'css/dog-collor.jpg' %}" class="img-fluid rounded-start" alt="Cat" style="object-fit: cover; aspect-ratio: 1;">
+                      </div>
+                      <div class="col-md-6 d-flex align-items-center justify-content-center">
+                          <div class="card-body" style="padding: 8px;">
+                              <h5 class="card-title" style="color: black;">Collar Leashes</h5>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </a>
+      </div>
+      
+      <!-- Fifth Card -->
+      <div class="col-md-4">
+          <a href="{% url 'dog_training_aids_products' %}">
+            <div class="card mb-2 product-card h-100">
+                  <div class="row g-0 h-100">
+                      <div class="col-md-6 d-flex align-items-center">
+                          <img src="{% static 'css/dog-training.jpg' %}" class="img-fluid rounded-start" alt="Cat" style="object-fit: cover; aspect-ratio: 1;">
+                      </div>
+                      <div class="col-md-6 d-flex align-items-center justify-content-center">
+                          <div class="card-body" style="padding: 8px;">
+                              <h5 class="card-title" style="color: black;">Training Aids</h5>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </a>
+      </div>
+      
+      <!-- Sixth Card -->
+      <div class="col-md-4">
+          <a href="{% url 'dog_grooming_supplies_products' %}">
+            <div class="card mb-2 product-card h-100">
+                  <div class="row g-0 h-100">
+                      <div class="col-md-6 d-flex align-items-center">
+                          <img src="{% static 'css/dog-grooming.jpg' %}" class="img-fluid rounded-start" alt="Alt Text" style="object-fit: cover; aspect-ratio: 1;">
+                      </div>
+                      <div class="col-md-6 d-flex align-items-center justify-content-center">
+                          <div class="card-body" style="padding: 8px;">
+                              <h5 class="card-title" style="color: black;">Grooming Supplies</h5>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </a>
+      </div>
+  </div>
 </div>
 {% endblock content %}

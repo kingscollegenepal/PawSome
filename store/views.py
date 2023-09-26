@@ -223,65 +223,65 @@ def dog_products(request):
     }
     return render(request, "dog_products.html", context)
 
-def beds_and_mats_products(request):
+def dog_beds_and_mats_products(request):
     """Display all dog pen products."""
     beds_and_mats_products = Product.objects.filter(category='Dog', subcategory='Beds and Mats')
     context = {"products": beds_and_mats_products}
-    return render(request, "beds_and_mats_products.html", context)
+    return render(request, "dog_beds_and_mats_products.html", context)
 
-def healthcare_products(request):
+def dog_healthcare_products(request):
     """Display all dog pen products."""
     healthcare_products = Product.objects.filter(category='Dog', subcategory='healthcare')
     context = {"products": healthcare_products}
-    return render(request, "healthcare_products.html", context)
+    return render(request, "dog_healthcare_products.html", context)
 
-def treats_and_chews_products(request):
+def dog_treats_and_chews_products(request):
     """Display all dog pen products."""
     treats_and_chews_products = Product.objects.filter(category='Dog', subcategory='Treats and Chews')
     context = {"products": treats_and_chews_products}
-    return render(request, "treats_and_chews_products.html", context)
+    return render(request, "dog_treats_and_chews_products.html", context)
 
-def food_products(request):
+def dog_food_products(request):
     """Display all dog pen products."""
-    food_products = Product.objects.filter(category='Dog', subcategory='Food')
+    food_products = Product.objects.filter(category='Dog', subcategory='D - Food')
     context = {"products": food_products}
-    return render(request, "food_products.html", context)
+    return render(request, "dog_food_products.html", context)
 
-def bowls_feeders_products(request):
+def dog_bowls_feeders_products(request):
     """Display all dog pen products."""
     bowls_feeders_products = Product.objects.filter(category='Dog', subcategory='Bowls & Feeders')
     context = {"products": bowls_feeders_products}
-    return render(request, "bowls_feeders_products.html", context)
+    return render(request, "dog_bowls_feeders_products.html", context)
 
-def toys_products(request):
+def dog_toys_products(request):
     """Display all dog pen products."""
     toys_products = Product.objects.filter(category='Dog', subcategory='Toys')
     context = {"products": toys_products}
-    return render(request, "toys_products.html", context)
+    return render(request, "dog_toys_products.html", context)
 
-def collar_leashes_products(request):
+def dog_collar_leashes_products(request):
     """Display all dog pen products."""
     collar_leashes_products = Product.objects.filter(category='Dog', subcategory='Collar & Leashes')
     context = {"products": collar_leashes_products}
-    return render(request, "collar_leashes_products.html", context)
+    return render(request, "dog_collar_leashes_products.html", context)
 
-def training_aids_products(request):
+def dog_training_aids_products(request):
     """Display all dog pen products."""
     training_aids_products = Product.objects.filter(category='Dog', subcategory='Training Aids')
     context = {"products": training_aids_products}
-    return render(request, "training_aids_products.html", context)
+    return render(request, "dog_training_aids_products.html", context)
 
-def grooming_supplies_products(request):
+def dog_grooming_supplies_products(request):
     """Display all dog pen products."""
     grooming_supplies_products = Product.objects.filter(category='Dog', subcategory='Vitamins & Supplements')
     context = {"products": grooming_supplies_products}
-    return render(request, "grooming_supplies_products.html", context)
+    return render(request, "dog_grooming_supplies_products.html", context)
 
-def crates_and_carriers_products(request):
+def dog_crates_and_carriers_products(request):
     """Display all dog pen products."""
     crates_and_carriers_products = Product.objects.filter(category='Dog', subcategory='Crates & Carriers')
     context = {"products": crates_and_carriers_products}
-    return render(request, "crates_and_carriers_products.html", context)
+    return render(request, "dog_crates_and_carriers_products.html", context)
 
 
 def cat_products(request):
@@ -302,6 +302,66 @@ def cat_products(request):
 
     context = {"products": cat_products}
     return render(request, "cat_products.html", context)
+
+def cat_food(request):
+    """Display all dog pen products."""
+    cat_food = Product.objects.filter(category='Cat', subcategory='C - Food')
+    context = {"products": cat_food}
+    return render(request, "cat_food.html", context)
+
+def cat_grooming(request):
+    """Display all dog pen products."""
+    cat_grooming = Product.objects.filter(category='Cat', subcategory='C - Grooming')
+    context = {"products": cat_grooming}
+    return render(request, "cat_grooming.html", context)
+
+def cat_toys(request):
+    """Display all dog pen products."""
+    cat_toys = Product.objects.filter(category='Cat', subcategory='C - Toys')
+    context = {"products": cat_toys}
+    return render(request, "cat_toys.html", context)
+
+def cat_treats(request):
+    """Display all dog pen products."""
+    cat_treats = Product.objects.filter(category='Cat', subcategory='C - Treats')
+    context = {"products": cat_treats}
+    return render(request, "cat_treats.html", context)
+
+def cat_transport(request):
+    """Display all dog pen products."""
+    cat_transport = Product.objects.filter(category='Cat', subcategory='C - Transport')
+    context = {"products": cat_transport}
+    return render(request, "cat_transport.html", context)
+
+def cat_bedding(request):
+    """Display all dog pen products."""
+    cat_bedding = Product.objects.filter(category='Cat', subcategory='C - Bedding')
+    context = {"products": cat_bedding}
+    return render(request, "cat_bedding.html", context)
+
+def cat_collors_harness(request):
+    """Display all dog pen products."""
+    cat_collors_harness = Product.objects.filter(category='Cat', subcategory='C - Collors & Harness')
+    context = {"products": cat_collors_harness}
+    return render(request, "cat_collors_harness.html", context)
+
+def cat_kernels(request):
+    """Display all dog pen products."""
+    cat_kernels = Product.objects.filter(category='Cat', subcategory='C - Kernels')
+    context = {"products": cat_kernels}
+    return render(request, "cat_kernels.html", context)
+
+def cat_training_aids(request):
+    """Display all dog pen products."""
+    cat_training_aids = Product.objects.filter(category='Cat', subcategory='C - Training Aids')
+    context = {"products": cat_training_aids}
+    return render(request, "cat_training_aids.html", context)
+
+def cat_bowls(request):
+    """Display all dog pen products."""
+    cat_bowls = Product.objects.filter(category='Cat', subcategory='C - Bowls')
+    context = {"products": cat_bowls}
+    return render(request, "cat_bowls.html", context)
 
 
 def checkout(request):

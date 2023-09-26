@@ -2,74 +2,244 @@
 
 {% load humanize %}
 
-{% load static %}
-
 {% block content %}
 
-<style>
-    .carousel-item {
-  height: 300px; /* Adjust this height value to your preference */
-  overflow: hidden;
-  }
+{% load static %}
 
-  .carousel-item img {
-  height: 100%;
-  object-fit: cover;
-  }
+
+<style>
+      .carousel-item {
+    height: 300px; /* Adjust this height value to your preference */
+    overflow: hidden;
+    }
+
+    .carousel-item img {
+    height: 100%;
+    object-fit: cover;
+    }
+
+    .product-card {
+        height: 200px; /* Adjust as needed */
+    }
+    .product-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+    .row {
+    display: flex;
+    align-items: stretch;
+    }
+  
+    .card {
+    height: 100%;
+    }
+
+    .padded-row {
+    padding-right: 60px; /* Adjust the value as needed */
+    padding-left: 60px; /* Adjust the value as needed */
+    padding-bottom: 20px; /* Adjust the value as needed */
+    }
+
+    .padde-row {
+    padding-top: 60px; /* Adjust the value as needed */
+    padding-right: 60px; /* Adjust the value as needed */
+    padding-left: 60px; /* Adjust the value as needed */
+    }
+
 </style>
 
 <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active" data-bs-interval="10000">
-        <img src="{% static 'css/Cat-Product.jpg' %}" class="d-block w-100" alt="Cat-Product">
-      </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active" data-bs-interval="10000">
+      <img src="{% static 'css/Cat-Product.jpg' %}" class="d-block w-100" alt="Dog-Product">
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
   </div>
-  
-
-<div class="container">
-    <h2>Cat Products</h2>
-    <div class="row justify-content-center">
-
-        {% for product in products %}
-        <div class="col-6 col-sm-4 col-md-3 mb-4">
-            <div class="productContainer">
-                <div class="card w-full card-product product-card" style="box-shadow:0 0 8px #6050DC"><a href="{% url 'product_detail' product.id %}">
-                    <img class="card-img-top" src="{{product.picture.url}}" alt="{{product.name}}">
-                    <div class="card-body">
-                        <h5 class="card-title" style = "color:black ;">{{ product.name }}</h5>
-                        <p class="card-text" style = "color:black ;">{{ product.description|truncatewords:20 }}</p>
-                            
-                            {% for star in "12345"|make_list %}
-                                {% if forloop.counter <= product.floor_rating %}
-                                    <i class="bi bi-star-fill" style="color: gold;"></i>
-                                {% elif forloop.counter == product.floor_rating|add:"1" and product.half_star %}
-                                    <i class="bi bi-star-half" style="color: gold;"></i>
-                                {% else %}
-                                    <i class="bi bi-star" style="color: gold;"></i>
-                                {% endif %}
-                            {% endfor %}
-                            <span style="color:goldenrod;">({{ product.average_rating|floatformat:1 }})</span>
-                            <!-- ... other product details ... -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
 
 
-                        <p class="card-text" style = "color:black ;">Rs.{{product.price | intcomma}}</p>
-                        <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">View Details</a>
+
+<div class="row g-4 padde-row">
+    <h2> Shop by Categories</h2>
+</div>
+
+<div class="row g-4 padded-row">
+        <!-- First Row of Cards -->
+        <!-- First Card -->
+        <div class="col-md-4 p-20">
+          <a href="{% url 'cat_food' %}">
+            <div class="card mb-2 product-card h-100">
+                      <div class="row g-0 h-100">
+                        <div class="col-md-6 d-flex align-items-center">
+                          <img src="{% static 'css/cat-food.jpg' %}" class="img-fluid rounded-start" alt="Alt Text" >
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center justify-content-center">
+                            <div class="card-body" style="padding: 8px;">
+                                <h5 class="card-title" style="color: black;">Food</h5>
+                            </div>
+                        </div>
+                      </div>
                     </div>
-                </div></a>
-            </div>
+          </a>
         </div>
-        {% endfor %}
-    </div>
+        
+        <!-- Second Card -->
+        <div class="col-md-4">
+          <a href="{% url 'cat_grooming' %}">
+            <div class="card mb-2 product-card h-100">
+                  <div class="row g-0 h-100">
+                      <div class="col-md-6 d-flex align-items-center">
+                          <img src="{% static 'css/cat-grooming.jpg' %}" class="img-fluid rounded-start" alt="Alt Text">
+                      </div>
+                      <div class="col-md-6 d-flex align-items-center justify-content-center">
+                          <div class="card-body" style="padding: 8px;">
+                              <h5 class="card-title" style="color: black;">Grooming</h5>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </a>
+      </div>
+        
+        <!-- Third Card -->
+        <div class="col-md-4">
+          <a href="{% url 'cat_toys' %}">
+            <div class="card mb-2 product-card h-100">
+                  <div class="row g-0 h-100">
+                      <div class="col-md-6 d-flex align-items-center">
+                          <img src="{% static 'css/cat-toys.jpg' %}" class="img-fluid rounded-start" alt="Alt Text">
+                      </div>
+                      <div class="col-md-6 d-flex align-items-center justify-content-center">
+                          <div class="card-body" style="padding: 8px;">
+                              <h5 class="card-title" style="color: black;">Toys</h5>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </a>
+      </div>
+</div>
+  
+    <div class="row g-4 padded-row">
+        <!-- Second Row of Cards -->
+        <!-- Fourth Card -->
+        <div class="col-md-4">
+            <a href="{% url 'cat_collors_harness' %}">
+                <div class="card mb-2 product-card h-100">
+                    <div class="row g-0 h-100">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <img src="{% static 'css/cat-collors.jpg' %}" class="img-fluid rounded-start" alt="Cat">
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center justify-content-center">
+                            <div class="card-body" style="padding: 8px;">
+                                <h5 class="card-title" style="color: black;">Collors Harness</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <!-- Fifth Card -->
+        <div class="col-md-4">
+            <a href="{% url 'cat_kennels' %}">
+                <div class="card mb-2 product-card h-100">
+                    <div class="row g-0 h-100">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <img src="{% static 'css/cat-kennels.jpg' %}" class="img-fluid rounded-start" alt="Cat">
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center justify-content-center">
+                            <div class="card-body" style="padding: 8px;">
+                                <h5 class="card-title" style="color: black;">Kennels</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <!-- Sixth Card -->
+        <div class="col-md-4">
+            <a href="{% url 'cat_bedding' %}">
+                <div class="card mb-2 product-card h-100">
+                    <div class="row g-0 h-100">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <img src="{% static 'css/cat-bedding.jpg' %}" class="img-fluid rounded-start" alt="Alt Text">
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center justify-content-center">
+                            <div class="card-body" style="padding: 8px;">
+                                <h5 class="card-title" style="color: black;">Bedding</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+      </div>
+    
+
+        <div class="row g-4 padded-row">
+          <!-- Third Row of Cards -->
+          <!-- Seventh Card -->
+          <div class="col-md-4">
+              <a href="{% url 'cat_training_aids' %}">
+                <div class="card mb-2 product-card h-100">
+                      <div class="row g-0 h-100">
+                          <div class="col-md-6 d-flex align-items-center">
+                              <img src="{% static 'css/cat-training.jpg' %}" class="img-fluid rounded-start" alt="Cat">
+                          </div>
+                          <div class="col-md-6 d-flex align-items-center justify-content-center">
+                              <div class="card-body" style="padding: 8px;">
+                                  <h5 class="card-title" style="color: black;">Training Aids</h5>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </a>
+          </div>
+          
+          <!-- Fifth Card -->
+          <div class="col-md-4">
+              <a href="{% url 'cat_bowls' %}">
+                <div class="card mb-2 product-card h-100">
+                      <div class="row g-0 h-100">
+                          <div class="col-md-6 d-flex align-items-center">
+                              <img src="{% static 'css/cat-bowls.jpg' %}" class="img-fluid rounded-start" alt="Cat">
+                          </div>
+                          <div class="col-md-6 d-flex align-items-center justify-content-center">
+                              <div class="card-body" style="padding: 8px;">
+                                  <h5 class="card-title" style="color: black;">Bowls</h5>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </a>
+          </div>
+          
+          <!-- Sixth Card -->
+          <div class="col-md-4">
+              <a href="{% url 'cat_transport' %}">
+                <div class="card mb-2 product-card h-100">
+                      <div class="row g-0 h-100">
+                          <div class="col-md-6 d-flex align-items-center">
+                              <img src="{% static 'css/cat-transport.jpg' %}" class="img-fluid rounded-start" alt="Alt Text">
+                          </div>
+                          <div class="col-md-6 d-flex align-items-center justify-content-center">
+                              <div class="card-body" style="padding: 8px;">
+                                  <h5 class="card-title" style="color: black;">Transport</h5>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </a>
+          </div>
 </div>
 {% endblock content %}
-
-

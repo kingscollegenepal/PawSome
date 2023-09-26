@@ -11,31 +11,46 @@ class Product(models.Model):
         ('Cat', 'Cat'),
     )
 
-    CATEGORY_SIZE_CHOICES = (
-        ('Small', 'Small'),
-        ('Medium', 'Medium'),
-        ('Large', 'Large'),
+    SUBCATEGORY_CHOICES = (
+        ('D - Beds & Mats', 'D - Beds & Mats'),
+        ('D - Healthcare', 'D - Healthcare'),
+        ('D - Treats & Chews', 'D - Treats & Chews'),
+        ('D - Food', 'D - Food'),
+        ('D - Bowls & Feeders', 'D - Bowls & Feeders'),
+        ('D - Toys', 'D - Toys'),
+        ('D - Collar & Leashes', 'D - Collar & Leashes'),
+        ('D - Training Aids', 'D - Training Aids'),
+        ('D - Grooming Supplies', 'D - Grooming Supplies'),
+        ('D - Crates & Carriers', 'D - Crates & Carriers'),
+        ('C - Food', 'C - Food'),
+        ('C - Grooming', 'C - Grooming'),
+        ('C - Toys', 'C - Toys'),
+        ('C - Treats', 'C - Treats'),
+        ('C - Transport', 'C - Transport'),
+        ('C - Bedding', 'C - Bedding'),
+        ('C - Collors & Harness', 'C - Collors & Harness'),
+        ('C - Training Aids', 'C - Training Aids'),
+        ('C - Bowls', 'C - Bowls'),
+        ('C - Kernels', 'C - Kernels'),
     )
 
-    SUBCATEGORY_CHOICES = (
-        ('Beds & Mats', 'Beds & Mats'),
-        ('Healthcare', 'Healthcare'),
-        ('Treats & Chews', 'Treats & Chews'),
-        ('Food', 'Food'),
-        ('Bowls & Feeders', 'Bowls & Feeders'),
-        ('Toys', 'Toys'),
-        ('Collar & Leashes', 'Collar & Leashes'),
-        ('Training Aids', 'Training Aids'),
-        ('Grooming Supplies', 'Grooming Supplies'),
-        ('Crates & Carriers', 'Crates & Carriers'),
+    CATEGORY_BRAND_CHOICES = (
+        ('Pedigree', 'Pedigree'),
+        ('Whiskas', 'Whiskas'),
+        ('Royal Canin', 'Royal Canin'),
+        ('Drools', 'Drools'),
+        ('Farmina', 'Farmina'),
+        ('Sheba', 'Sheba'),
+        ('Brunos Wild', 'Brunos Wild'),
+        ('Catsan', 'Catsan'),
     )
     
     name = models.CharField(max_length=100)
     price = models.IntegerField()
     picture = models.ImageField(upload_to="img", default="")
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='Dog')
+    brand = models.CharField(max_length=20, choices=CATEGORY_BRAND_CHOICES, default='Sheba')
     subcategory = models.CharField(max_length=30, choices=SUBCATEGORY_CHOICES, default='Food')
-    size = models.CharField(max_length=10, choices=CATEGORY_SIZE_CHOICES, default='Small')
     description = models.TextField(default="No description available")
     ingredients = models.TextField(default="No ingredients listed")
     direction_to_use = models.TextField(default="No direction to use provided")

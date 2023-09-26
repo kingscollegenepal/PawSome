@@ -2,11 +2,28 @@
 
 {% block content %}
 
+<style>
+    .product-img-container {
+        width: 100%; /* or set a specific width */
+        height: 400px; /* or set a specific height */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .product-img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+</style>
+
 
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6">
-            <img src="{{ product.picture.url }}" alt="{{ product.name }}" class="img-fluid">
+            <div class="product-img-container">
+                <img src="{{ product.picture.url }}" alt="{{ product.name }}" class="product-img">
+            </div>
         </div>
 
         <div class="col-md-6">
@@ -38,6 +55,20 @@
                 </div>
 
         </div>
+
+        
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Description:</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Ingredients:</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Directions to Use:</a>
+            </li>
+        </ul>
+
 
         <div class="col-md-12">
             <div class="col-md-6">

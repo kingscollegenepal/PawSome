@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+
+
+<style>
+    .carousel-item {
+        height: 300px;
+        overflow: hidden;
+    }
+    
+    .carousel-item img {
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .col-6, .col-sm-4, .col-md-3 {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .productContainer {
+        flex-grow: 1; /* Ensures that the container grows to fill the available space */
+    }
+    
+    .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .card-body {
+        flex-grow: 1; /* Ensures that the card body grows to fill the available space within the card */
+    }
+    
+    .card-img-container {
+        height: 150px; /* Adjust as needed */
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    
+    .card-img-top {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+  </style>
+
+
+<div class="container">
+    <h2>Dog Grooming</h2>
+    <div class="row justify-content-center">
+        {% for product in products %}
+        <div class="col-6 col-sm-4 col-md-3 mb-4">
+            <div class="productContainer">
+                <div class="card w-full card-product product-card" style="box-shadow:0 0 8px #6050DC"><a href="{% url 'product_detail' product.id %}">
+                    <div class="card-img-container">
+                        <img class="card-img-top" src="{{product.picture.url}}" alt="{{product.name}}">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" style = "color:black ;">{{ product.name }}</h5>
+                        <p class="card-text" style = "color:black ;">{{ product.description|truncatewords:20 }}</p>
+                        <p class="card-text" style = "color:black ;">Rating: {{ product.average_rating|floatformat:1 }} / 5</p>  <!-- Displaying the average rating -->
+                        <p class="card-text" style = "color:black ;">Rs.{{product.price | intcomma}}</p>
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div></a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

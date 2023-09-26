@@ -114,95 +114,95 @@
     </div>
 
 
-    <button class="btn btn-info placeorder-btn">Pay with Khalti</button>
+    <button id="payment-button">Pay with Khalti</button>
 
-    <div class="stepper-wrapper">
-        <div class="stepper-item completed" id="step2">
-          <div class="step-counter">1</div>
-          <div class="step-name">Cart</div>
-        </div>
-        <div class="stepper-item completed" id="step1">
-          <div class="step-counter">2</div>
-          <div class="step-name">Checkout</div>
-        </div>
-        <div class="stepper-item active" id="step3">
-            <div class="step-counter">3</div>
-            <div class="step-name">Payment</div>
-        </div>
-        <div class="stepper-item" id="step4">
-            <div class="step-counter">4</div>
-            <div class="step-name">Order Placed</div>
-        </div>
-    </div>
+      <div class="stepper-wrapper">
+          <div class="stepper-item completed" id="step2">
+            <div class="step-counter">1</div>
+            <div class="step-name">Cart</div>
+          </div>
+          <div class="stepper-item completed" id="step1">
+            <div class="step-counter">2</div>
+            <div class="step-name">Checkout</div>
+          </div>
+          <div class="stepper-item active" id="step3">
+              <div class="step-counter">3</div>
+              <div class="step-name">Payment</div>
+          </div>
+          <div class="stepper-item" id="step4">
+              <div class="step-counter">4</div>
+              <div class="step-name">Order Placed</div>
+          </div>
+      </div>  
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        function showLoadingSpinner() {
-            document.getElementById("spinner-container").style.display = "flex";
-        }
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <script>
+          function showLoadingSpinner() {
+              document.getElementById("spinner-container").style.display = "flex";
+          }
 
-        function hideLoadingSpinner() {
-            document.getElementById("spinner-container").style.display = "none";
-        }
-        var config = {
-            // replace the publicKey with yours
-            "publicKey": "test_public_key_369c0c5bb2e54b9aa645e7bc8501c85a",
-            "productIdentity": "order_{{order.id}}",
-            "productName": "order_{{order.id}}",
-            "productUrl": "http://localhost:8000",
-            "paymentPreference": [
-                "MOBILE_BANKING",
-                "KHALTI",
-                "EBANKING",
-                "CONNECT_IPS",
-                "SCT",
-                ],
-            "eventHandler": {
-                onSuccess (payload) {
-                    showLoadingSpinner();
-                    // hit merchant api for initiating verfication
-                    axios.get("/khalti-verify/", {
-                        params: {
-                            "token": payload.token,
-                            "amount": payload.amount,
-                            "order_id": "{{order.id}}"
-                        }
-                    }).then(function(resp){
-                        hideLoadingSpinner();
-                        if (resp.data.success == true){
-                            alert("Thanks. Payment Completed Successfully");
+          function hideLoadingSpinner() {
+              document.getElementById("spinner-container").style.display = "none";
+          }
+          var config = {
+              // replace the publicKey with yours
+              "publicKey": "test_public_key_369c0c5bb2e54b9aa645e7bc8501c85a",
+              "productIdentity": "order_{{order.id}}",
+              "productName": "order_{{order.id}}",
+              "productUrl": "http://localhost:8000",
+              "paymentPreference": [
+                  "MOBILE_BANKING",
+                  "KHALTI",
+                  "EBANKING",
+                  "CONNECT_IPS",
+                  "SCT",
+                  ],
+              "eventHandler": {
+                  onSuccess (payload) {
+                      showLoadingSpinner();
+                      // hit merchant api for initiating verfication
+                      axios.get("/khalti-verify/", {
+                          params: {
+                              "token": payload.token,
+                              "amount": payload.amount,
+                              "order_id": "{{order.id}}"
+                          }
+                      }).then(function(resp){
+                          hideLoadingSpinner();
+                          if (resp.data.success == true){
+                              alert("Thanks. Payment Completed Successfully");
 
-                            // Update the classes of the stepper items
-                            document.getElementById("step1").classList.add("completed");
-                            document.getElementById("step2").classList.add("completed");
-                            document.getElementById("step3").classList.add("completed");
-                            document.getElementById("step4").classList.add("active");
+                              // Update the classes of the stepper items
+                              document.getElementById("step1").classList.add("completed");
+                              document.getElementById("step2").classList.add("completed");
+                              document.getElementById("step3").classList.add("completed");
+                              document.getElementById("step4").classList.add("active");
 
-                            location.href = "/";   
-                        }else{
-                            alert("Sorry. Error occurred")
-                            location.href = "{{request.build_absolute_uri}}"
-                        }
-                    })
-                },
-                onError (error) {
-                    hideLoadingSpinner();
-                    console.log(error);
-                },
-                onClose () {
-                    hideLoadingSpinner();
-                    console.log('widget is closing');
-                }
-            }
-        };
+                              location.href = "/";   
+                          }else{
+                              alert("Sorry. Error occurred")
+                              location.href = "{{request.build_absolute_uri}}"
+                          }
+                      })
+                  },
+                  onError (error) {
+                      hideLoadingSpinner();
+                      console.log(error);
+                  },
+                  onClose () {
+                      hideLoadingSpinner();
+                      console.log('widget is closing');
+                  }
+              }
+          };
 
-        var checkout = new KhaltiCheckout(config);
-        var btn = document.getElementById("payment-button");
-        btn.onclick = function () {
-            // minimum transaction amount must be 10, i.e 1000 in paisa.
-            checkout.show({amount: {{order.total}}*100});
-        }
-    </script>
+          var checkout = new KhaltiCheckout(config);
+          var btn = document.getElementById("payment-button");
+          btn.onclick = function () {
+              // minimum transaction amount must be 10, i.e 1000 in paisa.
+              checkout.show({amount: {{order.total}}*100});
+          }
+      </script>
 </body>
 </html>
 

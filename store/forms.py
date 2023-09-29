@@ -3,7 +3,7 @@ from .models import Order, Product, Review
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import RegexValidator
-
+from store.models import Customer
 
 class CheckoutForm(forms.ModelForm):
     ordered_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Full Name'}))
@@ -18,8 +18,20 @@ class CheckoutForm(forms.ModelForm):
     
     class Meta:
         model = Order
-        fields = ["ordered_by", "shipping_address",
-                  "mobile", "email", "payment_method"]
+        fields = ["ordered_by", "shipping_address", "mobile", "email", "payment_method"]
+        
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        customer = Customer.objects.create(
+            name=self.cleaned_data['ordered_by'],
+            shipping_address=self.cleaned_data['shipping_address'],
+            mobile=self.cleaned_data['mobile'],
+            email=self.cleaned_data['email']
+        )
+        instance.customer = customer
+        if commit:
+            instance.save()
+        return instance
         
 class ReviewForm(forms.ModelForm):
     RATING_CHOICES = [(i, i) for i in range(1, 6)]  # Assuming a 1-5 rating scale

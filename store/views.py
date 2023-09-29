@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View, TemplateView, CreateView, FormView, DetailView, ListView
-from store.models import Product, Cart, CartItem, Order, Review, Rating
+from store.models import Product, Cart, CartItem, Order, Review, Rating, OrderItem
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Avg
 import json
 from django.contrib import messages
+from django.db import transaction
 from django.urls import reverse_lazy, reverse
 from .forms import CheckoutForm, ReviewForm
 from django.http import HttpResponseRedirect
@@ -18,6 +19,7 @@ from django.contrib.auth.models import User, auth
 from .forms import registrationform
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.http import url_has_allowed_host_and_scheme
+from collections import defaultdict
 
 
 # pylint: disable=missing-function-docstring
@@ -225,7 +227,7 @@ def dog_products(request):
 
 def dog_beds_and_mats_products(request):
     """Display all dog pen products."""
-    beds_and_mats_products = Product.objects.filter(category='Dog', subcategory='Beds and Mats')
+    beds_and_mats_products = Product.objects.filter(category='Dog', subcategory='D - Beds & Mats')
     context = {"products": beds_and_mats_products}
     return render(request, "dog_beds_and_mats_products.html", context)
 
@@ -374,29 +376,39 @@ def checkout(request):
         cartitems = cart.cartitems.all()
 
     if request.method == 'POST':
-        form = CheckoutForm(request.POST)
+        form = CheckoutForm(request.POST or None)
         if form.is_valid():
-            if cart:  # Using the cart object directly
-                # Initialize a new Order model object or get the existing object you want to update
-                order = form.save(commit=False)
+            if cart:
+                items_by_vendor = {}
+                for item in cartitems:
+                    if item.product.vendor not in items_by_vendor:
+                        items_by_vendor[item.product.vendor] = []
+                    items_by_vendor[item.product.vendor].append(item)
                 
-                order.total= cart.total_price
-                order.cart = cart
-                ## order.total = cart.total  # Assuming `total` is a field in your Cart model
-                order.order_status = "Order Received"
+                # Start a database transaction
+                with transaction.atomic():
+                    for vendor, items in items_by_vendor.items():
+                        order = form.save(commit=False)
+                        order.total = sum(item.product.price * item.quantity for item in items)
+                        order.cart = cart
+                        order.order_status = "Order Received"
+                        order.vendor = vendor
+                        order.save()
+                        
+                        # Create OrderItem instances for each item in the order
+                        for item in items:
+                            OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity)
+                    
+                    # Mark the cart as completed after processing all orders
+                    cart.completed = True
+                    cart.save()
+                
                 pm = form.cleaned_data.get("payment_method")
-                
-                # Save the form and the order object to the database
-                order.save()
-
-                # Mark the cart as completed
-                cart.completed = True
-                cart.save()
                 if pm == "Khalti":
                     return redirect(reverse("khaltirequest") + "?o_id=" + str(order.id))
             else:
                 return HttpResponseRedirect(reverse_lazy("home"))
-
+    
     context = {"form": form, "cart": cart, "items": cartitems}
     return render(request, "checkout.html", context)
 

@@ -5,6 +5,12 @@ from django.db.models import Avg
 from django.core.validators import MinValueValidator, MaxValueValidator
    
 # Create your models here.
+class Vendor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
+
+    def __str__(self):
+        return self.user.username
+
 class Product(models.Model):
     CATEGORY_CHOICES = (
         ('Dog', 'Dog'),
@@ -55,6 +61,7 @@ class Product(models.Model):
     ingredients = models.TextField(default="No ingredients listed")
     direction_to_use = models.TextField(default="No direction to use provided")
     in_stock = models.BooleanField(default=True)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, null=True, blank=True)
 
     def average_rating(self):
         total_ratings = self.ratings.all().aggregate(avg=Avg('value'))
@@ -63,6 +70,8 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
+
+
 class Rating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -126,6 +135,18 @@ METHOD = (
     ("Khalti", "Khalti"),
 )
 
+
+
+class Customer(models.Model):
+    name = models.CharField(max_length=255)
+    shipping_address = models.TextField()
+    mobile = models.CharField(max_length=10)
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.name
+    
+
 class Order(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
@@ -141,7 +162,19 @@ class Order(models.Model):
         max_length=20, choices=METHOD, default="Khalti")
     payment_completed = models.BooleanField(
         default=False, null=True, blank=True)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, null=True, blank=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     
     def __str__(self):
         return "Order: " + str(self.id)
+    
+    def display_items(self):
+        return ", ".join([str(item) for item in self.order_items.all()])
+    
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
 
+    def __str__(self):
+        return f"{self.product.name} - {self.quantity}"

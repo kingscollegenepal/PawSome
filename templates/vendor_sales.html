@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<h2>Daily Top Selling Products</h2>
+{% include "admin/top_selling_table.html" with top_selling=top_selling_daily %}
+
+<h2>Weekly Top Selling Products</h2>
+{% include "admin/top_selling_table.html" with top_selling=top_selling_weekly %}
+
+<h2>Monthly Top Selling Products</h2>
+{% include "admin/top_selling_table.html" with top_selling=top_selling_monthly %}
+
+<h2>Yearly Top Selling Products</h2>
+{% include "admin/top_selling_table.html" with top_selling=top_selling_yearly %}
+{% endblock %}

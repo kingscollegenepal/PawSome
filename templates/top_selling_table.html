@@ -1,0 +1,18 @@
+<!-- top_selling_table.html -->
+
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity Sold</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in top_selling %}
+        <tr>
+            <td>{{ item.product__name }}</td>
+            <td>{{ item.total_sold }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

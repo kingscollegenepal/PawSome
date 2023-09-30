@@ -1,7 +1,10 @@
-from django.db import models
+from django.db import models,  transaction
+from django.db.models import F
 from django.contrib.auth.models import User
 import uuid
 from django.db.models import Avg
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.core.validators import MinValueValidator, MaxValueValidator
    
 # Create your models here.
@@ -61,6 +64,7 @@ class Product(models.Model):
     ingredients = models.TextField(default="No ingredients listed")
     direction_to_use = models.TextField(default="No direction to use provided")
     in_stock = models.BooleanField(default=True)
+    stock_quantity = models.PositiveIntegerField(default=0)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, null=True, blank=True)
 
     def average_rating(self):
@@ -70,8 +74,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
-
-
 class Rating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -141,7 +143,7 @@ class Customer(models.Model):
     name = models.CharField(max_length=255)
     shipping_address = models.TextField()
     mobile = models.CharField(max_length=10)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
 
     def __str__(self):
         return self.name
@@ -171,6 +173,9 @@ class Order(models.Model):
     def display_items(self):
         return ", ".join([str(item) for item in self.order_items.all()])
     
+    def save(self, *args, **kwargs):
+            super().save(*args, **kwargs)  # Call the "real" save() method
+    
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -178,3 +183,9 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - {self.quantity}"
+    
+class SalesRecord(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    quantity_sold = models.PositiveIntegerField()
+    sale_date = models.DateField(auto_now_add=True)

@@ -22,16 +22,25 @@ class CheckoutForm(forms.ModelForm):
         
     def save(self, commit=True):
         instance = super().save(commit=False)
-        customer = Customer.objects.create(
-            name=self.cleaned_data['ordered_by'],
-            shipping_address=self.cleaned_data['shipping_address'],
-            mobile=self.cleaned_data['mobile'],
-            email=self.cleaned_data['email']
-        )
+        
+        # Check if a customer with the given email already exists
+        email = self.cleaned_data['email']
+        customer = Customer.objects.filter(email=email).first()
+
+        if not customer:
+            customer = Customer.objects.create(
+                name=self.cleaned_data['ordered_by'],
+                shipping_address=self.cleaned_data['shipping_address'],
+                mobile=self.cleaned_data['mobile'],
+                email=email
+            )
+
         instance.customer = customer
         if commit:
             instance.save()
         return instance
+
+
         
 class ReviewForm(forms.ModelForm):
     RATING_CHOICES = [(i, i) for i in range(1, 6)]  # Assuming a 1-5 rating scale

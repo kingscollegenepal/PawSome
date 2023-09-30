@@ -1,8 +1,20 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Count, Sum
 from django import forms
-from store.models import Product, Cart, CartItem, Order, Review, Rating, Vendor, Customer
+from django.urls import path
+from django.http import HttpResponse
+from django.db.models import Count, Case, When, IntegerField
+from datetime import timedelta
+from django.shortcuts import render, redirect
+from store.models import Product, Cart, CartItem, Order, Review, Rating, Vendor, Customer, SalesRecord
+import datetime
+from django.urls import reverse_lazy, reverse
+from django.utils import timezone
+from django.db.models import Sum
+from django.db import models
+from django.db.models import Subquery, OuterRef
 
 
 class VendorProductListFilter(admin.SimpleListFilter):
@@ -59,14 +71,104 @@ class VendorSubcategoryListFilter(admin.SimpleListFilter):
             return queryset.filter(subcategory=self.value())
         return queryset
 
+class OrderCountFilter(admin.SimpleListFilter):
+    title = 'Order Count'
+    parameter_name = 'order_count'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('ascending', 'Ascending'),
+            ('descending', 'Descending'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'ascending':
+            return queryset.order_by('order_count')
+        if self.value() == 'descending':
+            return queryset.order_by('-order_count')
+
+class SalesDateListFilter(admin.SimpleListFilter):
+    title = _('Sale Date')
+    parameter_name = 'sale_date'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('daily_asc', _('Daily Ascending')),
+            ('daily_desc', _('Daily Descending')),
+            ('weekly_asc', _('Weekly Ascending')),
+            ('weekly_desc', _('Weekly Descending')),
+            ('monthly_asc', _('Monthly Ascending')),
+            ('monthly_desc', _('Monthly Descending')),
+            ('yearly_asc', _('Yearly Ascending')),
+            ('yearly_desc', _('Yearly Descending')),
+        )
+
+
+    def queryset(self, request, queryset):
+        today = timezone.now()
+        ordering = None
+        filter_value = self.value()
+        filter_date = None  # Initialize filter_date here
+
+        if not filter_value:  # If filter is not set, return the original queryset.
+            return queryset
+
+        if 'daily' in filter_value:
+            filter_date = today.date()
+        elif 'weekly' in filter_value:
+            start_week = today - timedelta(days=today.weekday())
+            end_week = start_week + timedelta(days=6)
+            filter_date = (start_week.date(), end_week.date())
+        elif 'monthly' in filter_value:
+            start_month = today.replace(day=1)
+            end_month = start_month + timedelta(days=31)  # Adjust this for better month-end calculation
+            filter_date = (start_month.date(), end_month.date())
+        elif 'yearly' in filter_value:
+            start_year = today.replace(month=1, day=1)
+            end_year = start_year.replace(month=12, day=31)
+            filter_date = (start_year.date(), end_year.date())
+
+        if '_desc' in filter_value:
+            ordering = '-quantity_sold'
+        elif '_asc' in filter_value:
+            ordering = 'quantity_sold'
+
+        # We only use sale_date__range for weekly, monthly, and yearly, not for daily
+        if 'daily' in filter_value:
+            return queryset.filter(sale_date=filter_date).order_by(ordering)
+        elif filter_date:
+            return queryset.filter(sale_date__range=filter_date).order_by(ordering)
+        else:
+            return queryset.order_by(ordering)
+        
+class VendorCustomerListFilter(admin.SimpleListFilter):
+    title = _('customer')
+    parameter_name = 'customer'
+
+    def lookups(self, request, model_admin):
+        # If the user is a superuser, return all customers
+        if request.user.is_superuser:
+            return Customer.objects.all().values_list('id', 'name')
+
+        # If the user is a vendor, return customers who have placed orders with products from this vendor
+        vendor = Vendor.objects.get(user=request.user)
+        customers = Customer.objects.filter(order__order_items__product__vendor=vendor).distinct()
+        return customers.values_list('id', 'name')
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(customer__id=self.value())
+        return queryset
     
+
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'category', 'subcategory']
+    list_display = ['name', 'price', 'stock_quantity', 'category', 'subcategory']
     search_fields = ['name', 'category', 'subcategory']
     list_filter = [VendorCategoryListFilter, VendorSubcategoryListFilter]  # Updated this line
 
     
     def get_queryset(self, request):
+        
         qs = super().get_queryset(request)
         qs = qs.annotate(order_count=Sum('items__quantity'))
         if request.user.is_superuser:
@@ -134,29 +236,10 @@ class ReviewAdmin(admin.ModelAdmin):
         return qs.filter(product__vendor=vendor)
 
 admin.site.register(Review, ReviewAdmin)
-
-class VendorCustomerListFilter(admin.SimpleListFilter):
-    title = _('customer')
-    parameter_name = 'customer'
-
-    def lookups(self, request, model_admin):
-        # If the user is a superuser, return all customers
-        if request.user.is_superuser:
-            return Customer.objects.all().values_list('id', 'name')
-
-        # If the user is a vendor, return customers who have placed orders with products from this vendor
-        vendor = Vendor.objects.get(user=request.user)
-        customers = Customer.objects.filter(order__order_items__product__vendor=vendor).distinct()
-        return customers.values_list('id', 'name')
-
-    def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(customer__id=self.value())
-        return queryset
     
     
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'shipping_address', 'mobile', 'email', 'payment_method', 'order_status', 'customer')
+    list_display = ('id', 'shipping_address', 'mobile', 'email', 'payment_method', 'order_status', 'customer','created_at')
     search_fields = ['ordered_by', 'email', 'payment_method', 'order_status', 'vendor__user__username', 'customer__name']
     list_filter = ('payment_method', 'order_status', VendorCustomerListFilter,)
     readonly_fields = ['display_items']
@@ -186,17 +269,28 @@ class OrderAdmin(admin.ModelAdmin):
     display_items.short_description = 'Items'
     
     def get_queryset(self, request):
-            qs = super().get_queryset(request)
-            
-            # If superuser, return all orders
-            if request.user.is_superuser:
-                return qs
+        qs = super().get_queryset(request)
+        
+        # If superuser, return all orders
+        if request.user.is_superuser:
+            print("User is a superuser")
+            return qs
 
-            # If vendor, filter orders containing products belonging to this vendor
+        # If vendor, filter orders containing products belonging to this vendor
+        try:
             vendor = Vendor.objects.get(user=request.user)
-            return qs.filter(order_items__product__vendor=vendor).distinct()
+            print(f"Vendor: {vendor}")
+        except Vendor.DoesNotExist:
+            print("User is not related to any vendor")
+            return qs.none()  # If the user isn't related to any vendor, return no records
 
-    
+        # Return only orders containing products from the current vendor
+        vendor_orders = qs.filter(order_items__product__vendor=vendor).distinct()
+        print(f"Total vendor orders: {vendor_orders.count()}")
+        return vendor_orders
+
+
+
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = super().get_readonly_fields(request, obj)
         if request.user.is_superuser:
@@ -206,47 +300,93 @@ class OrderAdmin(admin.ModelAdmin):
 admin.site.register(Order, OrderAdmin)
 
 
-class OrderCountFilter(admin.SimpleListFilter):
-    title = 'Order Count'
-    parameter_name = 'order_count'
-
-    def lookups(self, request, model_admin):
-        return (
-            ('ascending', 'Ascending'),
-            ('descending', 'Descending'),
-        )
-
-    def queryset(self, request, queryset):
-        if self.value() == 'ascending':
-            return queryset.order_by('order_count')
-        if self.value() == 'descending':
-            return queryset.order_by('-order_count')
-
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ('name', 'shipping_address', 'mobile', 'email', 'order_count')
     search_fields = ['name', 'email', 'mobile']
-    list_filter = (OrderCountFilter,)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        qs = qs.annotate(order_count=Count('order'))
 
-        # If superuser, return all customers
+        # If superuser, return all customers with overall order count
         if request.user.is_superuser:
-            return qs
+            return qs.annotate(order_count=Count('order'))
 
-        # If vendor, filter customers who have placed orders containing products from this vendor
+        # If vendor, annotate each customer with the count of orders they made for this vendor's products
         vendor = Vendor.objects.get(user=request.user)
-        return qs.filter(order__order_items__product__vendor=vendor).distinct()
+        
+        qs = qs.annotate(
+            order_count=Count(
+                'order', 
+                filter=models.Q(order__vendor=vendor)
+            )
+        )
+
+        # Filter the queryset to only include customers with an order count greater than zero
+        return qs.filter(order_count__gt=0)
+
 
     def order_count(self, obj):
         return obj.order_count
 
-    order_count.admin_order_field = 'order_count'  # Allows column order sorting
+    order_count.admin_order_field = '_order_count'  # Allows column order sorting
     order_count.short_description = 'Total Orders'
-
 
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register([Cart, CartItem])
-admin.site.register(Vendor)
+
+class SalesRecordAdmin(admin.ModelAdmin):
+    list_display = ['product', 'quantity_sold', 'sale_date']
+    list_filter = (SalesDateListFilter,)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        else:
+            try:
+                vendor = Vendor.objects.get(user=request.user)
+                return qs.filter(vendor=vendor)
+            except Vendor.DoesNotExist:
+                return qs.none()  # If the user isn't related to any vendor, return no records
+
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "product":
+            if request.user.is_superuser:
+                kwargs["queryset"] = Product.objects.all()
+            else:
+                vendor = Vendor.objects.get(user=request.user)
+                kwargs["queryset"] = Product.objects.filter(vendor=vendor)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_readonly_fields(self, request, obj=None):
+        if request.user.is_superuser:
+            return []  # no fields should be read-only for admin
+        else:
+            return ["product", "vendor", "quantity_sold"]
+    
+    def update_sales_record(self, order):
+        for item in order.order_items.all():
+            product = item.product
+            vendor = product.vendor
+            quantity = item.quantity
+
+            # Get or create the SalesRecord
+            sales_record, created = SalesRecord.objects.get_or_create(
+                product=product, 
+                vendor=vendor,
+                defaults={'quantity_sold': quantity}
+            )
+            
+
+            # If the SalesRecord already existed, increment the quantity sold
+            if not created:
+                sales_record.quantity_sold += quantity
+                sales_record.save()
+
+
+admin.site.register(SalesRecord, SalesRecordAdmin)
+
+
+

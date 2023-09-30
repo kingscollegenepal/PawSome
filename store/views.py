@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View, TemplateView, CreateView, FormView, DetailView, ListView
-from store.models import Product, Cart, CartItem, Order, Review, Rating, OrderItem
+from store.models import Product, Cart, CartItem, Order, Review, Rating, OrderItem, Customer
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Avg
 import json
+from django.db.models import F
 from django.contrib import messages
 from django.db import transaction
 from django.urls import reverse_lazy, reverse
@@ -51,55 +52,54 @@ def cart(request):
     context = {"cart":cart, "items":cartitems}
     return render(request, "cart.html", context)
 
+
 def add_to_cart(request):
     data = json.loads(request.body)
     product_id = data["id"]
     product = Product.objects.get(id=product_id)
 
-    print("User:", request.user)
-
     if request.user.is_authenticated:
-        print("User is authenticated")
-
         cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
         cartitem, created = CartItem.objects.get_or_create(cart=cart, product=product)
-        cartitem.quantity +=1
-        cartitem.save()
-
-        num_of_item = cart.num_of_items
-
-        print(cartitem)
-
-    return JsonResponse(num_of_item, safe=False) 
+        
+        if cartitem.quantity < product.stock_quantity:
+            cartitem.quantity += 1
+            cartitem.save()
+            num_of_item = cart.num_of_items
+            response_data = {
+                "num_of_item": num_of_item,
+                "message": "Product added to cart!"
+            }
+        else:
+            messages.error(request, f"Sorry, we do not have more stock of {product.product.name} than currently in your cart.")
+        
+        return JsonResponse(num_of_item, safe=False)
 
 
 class ManageCartView(View):
     def get(self, request, *args, **kwargs):
-        print("This is manage cart section")
         item_id = self.kwargs["item_id"]
-        action=request.GET.get("action")
-        item_obj=CartItem.objects.get(id=item_id)
-        cart_item=item_obj.cart
-        print(item_id, action)
+        action = request.GET.get("action")
+        item_obj = CartItem.objects.get(id=item_id)
+        cart_item = item_obj.cart
 
-        if action=="inc":
-            item_obj.quantity += 1
-            item_obj.save()
-            updated_cart_total = cart_item.total_price
-            print("Updated Cart Total:", updated_cart_total)
-
-        elif action=="dcr":
+        if action == "inc":
+            if item_obj.quantity < item_obj.product.stock_quantity:
+                item_obj.quantity += 1
+                item_obj.save()
+            else:
+                messages.error(request, f"Sorry, we do not have more stock of {item_obj.product.name} than currently in your cart.")
+                return redirect("cart")
+        elif action == "dcr":
             item_obj.quantity -= 1
             item_obj.save()
-            updated_cart_total = cart_item.total_price
-            print("Updated Cart Total:", updated_cart_total)
             if item_obj.quantity == 0:
                 item_obj.delete()
-
-        elif action=="rmv":
+        elif action == "rmv":
             item_obj.delete()
 
         return redirect("cart")
+
 
 
 class CustomerProfileView(TemplateView):
@@ -112,6 +112,7 @@ class CustomerProfileView(TemplateView):
         orders = Order.objects.filter(cart__user=customer).order_by("-created_at")
         context['orders']=orders
         return context
+
 
 class CustomerOrderDetailView(DetailView):
     template_name = "customerorderdetail.html"
@@ -162,6 +163,7 @@ def product_detail(request, product_id):
         'review_count': review_count  # Adding review_count to the context
     }
     return render(request, 'product_detail.html', context)
+
 
 def cat_rating_product(request):
     products = Product.objects.all()
@@ -375,39 +377,55 @@ def checkout(request):
         cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
         cartitems = cart.cartitems.all()
 
-    if request.method == 'POST':
-        form = CheckoutForm(request.POST or None)
-        if form.is_valid():
-            if cart:
-                items_by_vendor = {}
-                for item in cartitems:
-                    if item.product.vendor not in items_by_vendor:
-                        items_by_vendor[item.product.vendor] = []
-                    items_by_vendor[item.product.vendor].append(item)
-                
-                # Start a database transaction
-                with transaction.atomic():
-                    for vendor, items in items_by_vendor.items():
-                        order = form.save(commit=False)
-                        order.total = sum(item.product.price * item.quantity for item in items)
-                        order.cart = cart
-                        order.order_status = "Order Received"
-                        order.vendor = vendor
-                        order.save()
+        if request.method == 'POST':
+            form = CheckoutForm(request.POST or None)
+            if form.is_valid():
+                # Check if customer already exists using the email from the form
+                email = form.cleaned_data.get("email")
+                try:
+                    customer = Customer.objects.get(email=email)
+                except ObjectDoesNotExist:
+                    # If customer doesn't exist, create a new one
+                    customer = Customer(
+                        name=form.cleaned_data.get("ordered_by"),  # Change "name" to "ordered_by"
+                        shipping_address=form.cleaned_data.get("shipping_address"),
+                        mobile=form.cleaned_data.get("mobile"),
+                        email=email
+                    )
+                    customer.save()
+
+                if cart:
+                    items_by_vendor = {}
+                    for item in cartitems:
+                        if item.product.vendor not in items_by_vendor:
+                            items_by_vendor[item.product.vendor] = []
+                        items_by_vendor[item.product.vendor].append(item)
+
+                    with transaction.atomic():
+                        for vendor, items in items_by_vendor.items():
+                            order = form.save(commit=False)
+                            order.total = sum(item.product.price * item.quantity for item in items)
+                            order.cart = cart
+                            order.order_status = "Order Received"
+                            order.vendor = vendor
+                            order.customer = customer  # Associate order with the customer
+                            order.save()
+
+                            for item in items:
+                                OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity)
+
+                            for item in order.order_items.all():
+                                item.product.stock_quantity = F('stock_quantity') - item.quantity
+                                item.product.save(update_fields=['stock_quantity'])
                         
-                        # Create OrderItem instances for each item in the order
-                        for item in items:
-                            OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity)
-                    
-                    # Mark the cart as completed after processing all orders
-                    cart.completed = True
-                    cart.save()
-                
-                pm = form.cleaned_data.get("payment_method")
-                if pm == "Khalti":
-                    return redirect(reverse("khaltirequest") + "?o_id=" + str(order.id))
-            else:
-                return HttpResponseRedirect(reverse_lazy("home"))
+                        cart.completed = True
+                        cart.save()
+
+                    pm = form.cleaned_data.get("payment_method")
+                    if pm == "Khalti":
+                        return redirect(reverse("khaltirequest") + "?o_id=" + str(order.id))
+                else:
+                    return HttpResponseRedirect(reverse_lazy("home"))
     
     context = {"form": form, "cart": cart, "items": cartitems}
     return render(request, "checkout.html", context)

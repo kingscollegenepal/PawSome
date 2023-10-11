@@ -2,6 +2,8 @@
 
 {% block content %}
 
+{% load static %}
+
 <style>
     .product-img-container {
         width: 100%; /* or set a specific width */
@@ -45,15 +47,15 @@
             <span style = "color:goldenrod ;"> ({{ average_rating|floatformat:1 }})</span>
             <span>review based on {{ review_count }}</span>
 
-                <!-- Quantity Selector -->
-                <div class="productContainer">
+            <!-- Quantity Selector -->
+            <div class="productContainer">
                     
-                    {% if request.user.is_authenticated %}
-                        <button class="btn btn-primary addToCartBtn" value="{{product.id}}" style="background-color: #6050DC">Add to Cart</button>
-                    {% else %}
-                        <h3><a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary" style="background-color: #6050DC">Login to Add to Cart</a></h3>
-                    {% endif %}
-                </div>
+                {% if request.user.is_authenticated %}
+                    <button class="btn btn-primary addToCartBtn" value="{{product.id}}" style="background-color: #6050DC">Add to Cart</button>
+                {% else %}
+                    <h3><a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary" style="background-color: #6050DC">Login to Add to Cart</a></h3>
+                {% endif %}
+            </div>
 
         </div>
 

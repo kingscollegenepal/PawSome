@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import RegexValidator
 from store.models import Customer
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, UsernameField, PasswordResetForm, SetPasswordForm
 
 class CheckoutForm(forms.ModelForm):
     ordered_by = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Full Name'}))
@@ -40,8 +42,6 @@ class CheckoutForm(forms.ModelForm):
             instance.save()
         return instance
 
-
-        
 class ReviewForm(forms.ModelForm):
     RATING_CHOICES = [(i, i) for i in range(1, 6)]  # Assuming a 1-5 rating scale
     rating = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.RadioSelect)
@@ -57,3 +57,63 @@ class registrationform(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
+
+class RegistrationForm(UserCreationForm):
+  password1 = forms.CharField(
+      label=_("Password"),
+      widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),
+  )
+  password2 = forms.CharField(
+      label=_("Password Confirmation"),
+      widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password Confirmation'}),
+  )
+
+  class Meta:
+    model = User
+    fields = ('username', 'email', )
+
+    widgets = {
+      'username': forms.TextInput(attrs={
+          'class': 'form-control',
+          'placeholder': 'Username'
+      }),
+      'email': forms.EmailInput(attrs={
+          'class': 'form-control',
+          'placeholder': 'Email'
+      })
+    }
+
+
+class LoginForm(AuthenticationForm):
+  username = UsernameField(widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Username"}))
+  password = forms.CharField(
+      label=_("Password"),
+      strip=False,
+      widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Password"}),
+  )
+
+class UserPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={
+        'class': 'form-control', 'placeholder': 'Email'
+    }))
+
+class UserSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(max_length=50, widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 'placeholder': 'New Password'
+    }), label="New Password")
+    new_password2 = forms.CharField(max_length=50, widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 'placeholder': 'Confirm New Password'
+    }), label="Confirm New Password")
+    
+
+class UserPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(max_length=50, widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 'placeholder': 'Old Password'
+    }), label='Old Password')
+    new_password1 = forms.CharField(max_length=50, widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 'placeholder': 'New Password'
+    }), label="New Password")
+    new_password2 = forms.CharField(max_length=50, widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 'placeholder': 'Confirm New Password'
+    }), label="Confirm New Password")

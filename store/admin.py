@@ -15,6 +15,7 @@ from django.utils import timezone
 from django.db.models import Sum
 from django.db import models
 from django.db.models import Subquery, OuterRef
+from calendar import monthrange
 
 
 class VendorProductListFilter(admin.SimpleListFilter):
@@ -103,7 +104,6 @@ class SalesDateListFilter(admin.SimpleListFilter):
             ('yearly_desc', _('Yearly Descending')),
         )
 
-
     def queryset(self, request, queryset):
         today = timezone.now()
         ordering = None
@@ -113,27 +113,30 @@ class SalesDateListFilter(admin.SimpleListFilter):
         if not filter_value:  # If filter is not set, return the original queryset.
             return queryset
 
-        if 'daily' in filter_value:
-            filter_date = today.date()
+        # Filtering based on selected timeframe
+        if 'yearly' in filter_value:
+            start_year = today.replace(month=1, day=1)
+            end_year = today.replace(month=12, day=31)
+            filter_date = (start_year.date(), end_year.date())
+        elif 'monthly' in filter_value:
+            start_month = today.replace(day=1)
+            _, last_day = monthrange(today.year, today.month)
+            end_month = today.replace(day=last_day)
+            filter_date = (start_month.date(), end_month.date())
         elif 'weekly' in filter_value:
             start_week = today - timedelta(days=today.weekday())
             end_week = start_week + timedelta(days=6)
             filter_date = (start_week.date(), end_week.date())
-        elif 'monthly' in filter_value:
-            start_month = today.replace(day=1)
-            end_month = start_month + timedelta(days=31)  # Adjust this for better month-end calculation
-            filter_date = (start_month.date(), end_month.date())
-        elif 'yearly' in filter_value:
-            start_year = today.replace(month=1, day=1)
-            end_year = start_year.replace(month=12, day=31)
-            filter_date = (start_year.date(), end_year.date())
+        elif 'daily' in filter_value:
+            filter_date = today.date()
 
+        # Ordering
         if '_desc' in filter_value:
             ordering = '-quantity_sold'
         elif '_asc' in filter_value:
             ordering = 'quantity_sold'
 
-        # We only use sale_date__range for weekly, monthly, and yearly, not for daily
+        # Apply filtering and ordering to the queryset
         if 'daily' in filter_value:
             return queryset.filter(sale_date=filter_date).order_by(ordering)
         elif filter_date:
@@ -241,7 +244,7 @@ admin.site.register(Review, ReviewAdmin)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'shipping_address', 'mobile', 'email', 'payment_method', 'order_status', 'customer','created_at')
     search_fields = ['ordered_by', 'email', 'payment_method', 'order_status', 'vendor__user__username', 'customer__name']
-    list_filter = ('payment_method', 'order_status', VendorCustomerListFilter,)
+    list_filter = ('payment_method', 'order_status', 'created_at', VendorCustomerListFilter,)
     readonly_fields = ['display_items']
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
@@ -335,9 +338,11 @@ admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register([Cart, CartItem])
 
+
 class SalesRecordAdmin(admin.ModelAdmin):
-    list_display = ['product', 'quantity_sold', 'sale_date']
-    list_filter = (SalesDateListFilter,)
+    list_display = ['product', 'quantity_sold','individual_product_cost','cost_based_on_quantity', 'sale_date']
+    search_fields = ['product__name']
+    list_filter = (SalesDateListFilter,VendorProductListFilter)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -372,18 +377,26 @@ class SalesRecordAdmin(admin.ModelAdmin):
             vendor = product.vendor
             quantity = item.quantity
 
+            # Assuming Product model has a 'cost' field that represents the cost of the product
+            individual_cost = product.cost  
+
             # Get or create the SalesRecord
             sales_record, created = SalesRecord.objects.get_or_create(
                 product=product, 
                 vendor=vendor,
-                defaults={'quantity_sold': quantity}
+                defaults={
+                    'quantity_sold': quantity,
+                    'individual_product_cost': individual_cost,
+                    'cost_based_on_quantity': individual_cost * quantity
+                }
             )
-            
 
-            # If the SalesRecord already existed, increment the quantity sold
+            # If the SalesRecord already existed, increment the quantity sold and update the cost
             if not created:
                 sales_record.quantity_sold += quantity
+                sales_record.cost_based_on_quantity += individual_cost * quantity
                 sales_record.save()
+
 
 
 admin.site.register(SalesRecord, SalesRecordAdmin)

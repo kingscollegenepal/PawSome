@@ -135,9 +135,8 @@ ORDER_STATUS = (
 
 METHOD = (
     ("Khalti", "Khalti"),
+    ("Cash On Delivery", "Cash On Delivery"),
 )
-
-
 
 class Customer(models.Model):
     name = models.CharField(max_length=255)
@@ -148,7 +147,6 @@ class Customer(models.Model):
     def __str__(self):
         return self.name
     
-
 class Order(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
@@ -188,4 +186,7 @@ class SalesRecord(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     quantity_sold = models.PositiveIntegerField()
+    individual_product_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    cost_based_on_quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     sale_date = models.DateField(auto_now_add=True)
+

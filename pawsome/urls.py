@@ -23,7 +23,10 @@ from store import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', include("store.urls")),
+    path('custom-admin/', include('admin_material.urls')),
+    path("", include("store.urls")),
 ]
 
-urlpatterns += static (settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,10 +1,16 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View, TemplateView, CreateView, FormView, DetailView, ListView
-from store.models import Product, Cart, CartItem, Order, Review, Rating, OrderItem, Customer
+from store.models import Product, Cart, CartItem, Order, Review, Rating, OrderItem, Customer, SalesRecord, Vendor
 from django.http import JsonResponse
+from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
+from store.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Avg
+from django.db.models import Avg, Sum
+from django.db.models import Count, F
+from django.contrib.admin.models import LogEntry
 import json
+from django.contrib.auth import logout
+from django.db.models import OuterRef, Subquery, Count
 from django.db.models import F
 from django.contrib import messages
 from django.db import transaction
@@ -13,6 +19,7 @@ from .forms import CheckoutForm, ReviewForm
 from django.http import HttpResponseRedirect
 import requests
 from django.shortcuts import get_object_or_404
+from django.db.models.functions import Coalesce
 from django.db.models import Q
 from django.core.paginator import Paginator
 from math import floor
@@ -21,6 +28,12 @@ from .forms import registrationform
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.http import url_has_allowed_host_and_scheme
 from collections import defaultdict
+from django.shortcuts import render
+from django.db.models import Sum
+from datetime import datetime, timedelta
+from datetime import time
+from django.utils import timezone
+
 
 
 # pylint: disable=missing-function-docstring
@@ -52,7 +65,6 @@ def cart(request):
     context = {"cart":cart, "items":cartitems}
     return render(request, "cart.html", context)
 
-
 def add_to_cart(request):
     data = json.loads(request.body)
     product_id = data["id"]
@@ -74,7 +86,6 @@ def add_to_cart(request):
             messages.error(request, f"Sorry, we do not have more stock of {product.product.name} than currently in your cart.")
         
         return JsonResponse(num_of_item, safe=False)
-
 
 class ManageCartView(View):
     def get(self, request, *args, **kwargs):
@@ -100,8 +111,6 @@ class ManageCartView(View):
 
         return redirect("cart")
 
-
-
 class CustomerProfileView(TemplateView):
     template_name = "customerprofile.html"
 
@@ -113,12 +122,10 @@ class CustomerProfileView(TemplateView):
         context['orders']=orders
         return context
 
-
 class CustomerOrderDetailView(DetailView):
     template_name = "customerorderdetail.html"
     model = Order
     context_object_name = "ord_obj"
-
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -164,7 +171,6 @@ def product_detail(request, product_id):
     }
     return render(request, 'product_detail.html', context)
 
-
 def cat_rating_product(request):
     products = Product.objects.all()
 
@@ -187,8 +193,6 @@ def cat_rating_product(request):
     }
     
     return render(request, 'cat_products.html', context)
-
-
 
 def search_results(request):
     query = request.GET.get('query')
@@ -287,7 +291,6 @@ def dog_crates_and_carriers_products(request):
     context = {"products": crates_and_carriers_products}
     return render(request, "dog_crates_and_carriers_products.html", context)
 
-
 def cat_products(request):
     """Display all cat products."""
     cat_products = Product.objects.filter(category='Cat')
@@ -367,69 +370,92 @@ def cat_bowls(request):
     context = {"products": cat_bowls}
     return render(request, "cat_bowls.html", context)
 
+def handle_sales_record(item, vendor, sale_date):
+    product_price = item.product.price
+    
+    record, created = SalesRecord.objects.get_or_create(
+        product=item.product,
+        vendor=vendor,
+        sale_date=sale_date,
+        defaults={
+            'quantity_sold': 0,
+            'individual_product_cost': product_price,
+            'cost_based_on_quantity': 0  # Initialized to 0, we'll update it in the next lines
+        }
+    )
+    record.quantity_sold += item.quantity
+    record.cost_based_on_quantity += product_price * item.quantity
+    record.save()
+
+
+
+def handle_order_creation(items, form, cart, vendor, customer):
+    order = form.save(commit=False)
+    order.total = sum(item.product.price * item.quantity for item in items)
+    order.cart = cart
+    order.order_status = "Order Received"
+    order.vendor = vendor
+    order.customer = customer
+    order.save()
+
+    for item in items:
+        OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity)
+        item.product.stock_quantity = F('stock_quantity') - item.quantity
+        item.product.save(update_fields=['stock_quantity'])
+
+        # Call the handle_sales_record function here
+        handle_sales_record(item, vendor, order.created_at.date())  # Assuming you have a date field on the order, adjust if necessary
+
+    return order
+
+
 
 def checkout(request):
-    cart = None
-    cartitems = []
-    form = CheckoutForm()
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse_lazy("home"))
 
-    if request.user.is_authenticated:
-        cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
-        cartitems = cart.cartitems.all()
+    cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
+    cartitems = cart.cartitems.all()
+    form = CheckoutForm(request.POST or None)
 
-        if request.method == 'POST':
-            form = CheckoutForm(request.POST or None)
-            if form.is_valid():
-                # Check if customer already exists using the email from the form
-                email = form.cleaned_data.get("email")
-                try:
-                    customer = Customer.objects.get(email=email)
-                except ObjectDoesNotExist:
-                    # If customer doesn't exist, create a new one
-                    customer = Customer(
-                        name=form.cleaned_data.get("ordered_by"),  # Change "name" to "ordered_by"
-                        shipping_address=form.cleaned_data.get("shipping_address"),
-                        mobile=form.cleaned_data.get("mobile"),
-                        email=email
-                    )
-                    customer.save()
+    # Fetch data for chart
+    customers = Customer.objects.annotate(order_count=Count('order'))
+    customer_names = [customer.name for customer in customers]
+    order_counts = [customer.order_count for customer in customers]
 
-                if cart:
-                    items_by_vendor = {}
-                    for item in cartitems:
-                        if item.product.vendor not in items_by_vendor:
-                            items_by_vendor[item.product.vendor] = []
-                        items_by_vendor[item.product.vendor].append(item)
+    if request.method == 'POST' and form.is_valid():
+        email = form.cleaned_data.get("email")
+        customer, _ = Customer.objects.get_or_create(
+            email=email,
+            defaults={
+                'name': form.cleaned_data.get("ordered_by"),
+                'shipping_address': form.cleaned_data.get("shipping_address"),
+                'mobile': form.cleaned_data.get("mobile"),
+            }
+        )
 
-                    with transaction.atomic():
-                        for vendor, items in items_by_vendor.items():
-                            order = form.save(commit=False)
-                            order.total = sum(item.product.price * item.quantity for item in items)
-                            order.cart = cart
-                            order.order_status = "Order Received"
-                            order.vendor = vendor
-                            order.customer = customer  # Associate order with the customer
-                            order.save()
+        items_by_vendor = defaultdict(list)
+        for item in cartitems:
+            items_by_vendor[item.product.vendor].append(item)
 
-                            for item in items:
-                                OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity)
+        last_order = None
+        with transaction.atomic():
+            for vendor, items in items_by_vendor.items():
+                last_order = handle_order_creation(items, form, cart, vendor, customer)
+            
+            cart.completed = True
+            cart.save()
 
-                            for item in order.order_items.all():
-                                item.product.stock_quantity = F('stock_quantity') - item.quantity
-                                item.product.save(update_fields=['stock_quantity'])
-                        
-                        cart.completed = True
-                        cart.save()
+        pm = form.cleaned_data.get("payment_method")
+        if pm == "Khalti" and last_order:
+            return redirect(reverse("khaltirequest") + "?o_id=" + str(last_order.id))
 
-                    pm = form.cleaned_data.get("payment_method")
-                    if pm == "Khalti":
-                        return redirect(reverse("khaltirequest") + "?o_id=" + str(order.id))
-                else:
-                    return HttpResponseRedirect(reverse_lazy("home"))
-    
-    context = {"form": form, "cart": cart, "items": cartitems}
+    context = {
+        "form": form, 
+        "cart": cart, 
+        "items": cartitems, 
+    }
     return render(request, "checkout.html", context)
-
 
 class KhaltiRequestView(View):
     def get(self, request, *args, **kwargs):
@@ -439,7 +465,6 @@ class KhaltiRequestView(View):
             "order": order
         }
         return render(request, "khaltirequest.html", context)
-    
 
 class KhaltiVerifyView(View):
     def get(self, request, *args, **kwargs):
@@ -471,7 +496,8 @@ class KhaltiVerifyView(View):
             "success": success
         }
         return JsonResponse(data)
-
+    
+"""
 def login(request):
     if request.method == "GET":
         # Store the 'next' parameter in the session
@@ -493,9 +519,8 @@ def login(request):
             return redirect(next_url)
         
     return render(request, 'index.html')
-
-
-
+"""
+"""
 def register(request):
     if request.method=='POST':
         form = registrationform(request.POST)
@@ -511,9 +536,11 @@ def register(request):
     else:
         form = registrationform()
     return render(request, 'register.html', {'form':form})
+"""
 
 from django.http import QueryDict
 
+"""
 def logout(request):
     next_url = request.GET.get('next', None)
 
@@ -526,10 +553,303 @@ def logout(request):
     
     auth.logout(request)
     return redirect(next_url)
+"""
 
 def success(request):
     return render(request, 'success.html')
 
+def get_sales_data(request):
+
+    # Identifying the vendor from the logged in user
+    vendor = None
+    try:
+        vendor = Vendor.objects.get(user=request.user)
+    except Vendor.DoesNotExist:
+        pass  # Vendor not found for the user
+
+    # Fetching from session or GET request
+    filters_from_session = request.session.get('filters', {})
+    timeframe_products = request.GET.get('timeframe_products')
+    timeframe_sales = request.GET.get('timeframe_sales')
+    timeframe_customers = request.GET.get('timeframe_customers')
+
+    if not timeframe_products:
+        timeframe_products = filters_from_session.get('timeframe_products', 'daily_desc')
+    if not timeframe_sales:
+        timeframe_sales = filters_from_session.get('timeframe_sales', 'daily_desc')
+    if not timeframe_customers:
+        timeframe_customers = filters_from_session.get('timeframe_customers', 'daily_desc')
+
+    # Update the session data after determining the current values
+    request.session['filters'] = {
+        'timeframe_products': timeframe_products,
+        'timeframe_customers': timeframe_customers,
+        'timeframe_sales': timeframe_sales
+    }
+
+    print("Timeframe Products:", timeframe_products)
+    print("Timeframe Sales:", timeframe_sales)
+    print("Timeframe Customers:", timeframe_customers)
 
 
+    today = timezone.now()
 
+    # Filtering logic for products
+    filter_date_products = get_filter_date(timeframe_products)
+    ordering_products = get_ordering(timeframe_products)
+    sales_data_products = get_sales_data_by_filter(timeframe_products, filter_date_products, ordering_products, vendor)
+    
+# Create a dictionary of {product name: quantity}
+    product_quantity_dict = {record.product.name: record.quantity_sold for record in sales_data_products}
+
+    # Filter out products with a quantity of 0
+    product_quantity_dict = {product: qty for product, qty in product_quantity_dict.items() if qty > 0}
+
+    # Generate lists
+    products = list(product_quantity_dict.keys())
+    quantities = list(product_quantity_dict.values())
+
+    costs_based_on_quantity = [float(record.cost_based_on_quantity) for record in sales_data_products]
+
+    # Sales Labels Calculation for products
+    sales_labels_products = get_sales_labels(timeframe_products, today)
+
+    # Filtering logic for total sales
+    filter_date_sales = get_filter_date(timeframe_sales)
+    sales_data_sales = get_sales_data_by_filter(timeframe_sales, filter_date_sales, None, vendor)
+
+    # Sales Labels Calculation for sales
+    sales_labels_sales = get_sales_labels(timeframe_sales, today)
+
+    # Filtering logic for customers
+    filter_date_customers = get_filter_date(timeframe_customers)
+    customers = get_customers_by_user(request.user, filter_date_customers)
+    customer_names = [customer.name for customer in customers]
+    order_counts = [customer.order_count for customer in customers]
+
+    # Calculate the total sales for today
+    total_sales_today = 0
+    if vendor:  # Ensure vendor is found for the user
+        total_sales_today = SalesRecord.objects.filter(
+            vendor=vendor, sale_date=today.date()
+        ).aggregate(total_sales=Sum('cost_based_on_quantity'))['total_sales'] or 0
+
+    print("Vendor:", vendor)
+
+    start_of_day = today.replace(hour=0, minute=0, second=0, microsecond=0)
+    end_of_day = today.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+    if vendor:
+        total_daily_orders = Order.objects.filter(vendor=vendor, created_at__range=(start_of_day, end_of_day)).count()
+
+    else:
+        total_daily_orders = 0
+    
+    print("Total Daily Orders:", total_daily_orders)
+
+    if vendor:
+
+        total_customers = Order.objects.filter(vendor=vendor).values('customer').distinct().count()
+
+    else:
+
+        total_customers = 0
+
+    if vendor:
+        total_cost = SalesRecord.objects.filter(
+            vendor=vendor
+        ).aggregate(total_cost=Sum('cost_based_on_quantity'))['total_cost'] or 0
+
+    else:
+        total_cost = 0
+
+    context = {
+        'products': products,
+        'quantities': quantities,
+        'costs_based_on_quantity': costs_based_on_quantity,
+        "customer_names": customer_names, 
+        "order_counts": order_counts,
+        'sales_labels_products': sales_labels_products,
+        'sales_labels_sales': sales_labels_sales,
+        'sales_data_sales': sales_data_sales,
+        'total_sales_today': total_sales_today,
+        'total_daily_orders': total_daily_orders,
+        'total_customers': total_customers,
+        'total_cost': total_cost,
+    }
+
+    print(len(products), products)
+    print(len(quantities), quantities)
+    print(len(customer_names), customer_names)
+    print(len(order_counts), order_counts)
+    
+    return render(request, 'pages/index.html', context)
+
+def get_sales_labels(timeframe, today):
+    if 'daily' in timeframe:
+        return [(today - timedelta(days=i)).strftime('%A') for i in range(7)][::-1]
+    elif 'weekly' in timeframe:
+        return [(today - timedelta(weeks=i)).strftime('%Y-%W') for i in range(4)][::-1]  # Week numbers
+    elif 'monthly' in timeframe:
+        return [(today - timedelta(days=i*30)).strftime('%B') for i in range(12)][::-1]
+    elif 'yearly' in timeframe:
+        return [str(today.year - i) for i in range(5)][::-1]
+    else:
+        return []
+    
+""""
+def get_filter_date(timeframe):
+    today = timezone.now()
+    filter_date = None
+
+    if 'daily' in timeframe:
+        filter_date = today.date()
+    elif 'weekly' in timeframe:
+        start_week = today - timedelta(days=today.weekday())
+        end_week = start_week + timedelta(days=6)
+        filter_date = (start_week.date(), end_week.date())
+    elif 'monthly' in timeframe:
+        start_month = today.replace(day=1)
+        last_day = (today.replace(month=today.month%12+1, day=1) - timedelta(days=1)).day
+        end_month = today.replace(day=last_day)
+        filter_date = (start_month.date(), end_month.date())
+    elif 'yearly' in timeframe:
+        start_year = today.replace(month=1, day=1)
+        end_year = start_year.replace(month=12, day=31)
+        filter_date = (start_year.date(), end_year.date())
+
+    return filter_date
+"""
+
+
+def get_filter_date(timeframe):
+    today = timezone.now().date()  # This gets the date without the time component
+
+    if timeframe == "daily_desc":
+        start_of_day = datetime.combine(today, time.min)
+        end_of_day = datetime.combine(today, time.max)
+        result = (start_of_day, end_of_day)
+        print(f"Returning from daily_desc: {type(result)} - {result}")
+        return result
+        return (start_of_day, end_of_day)
+    elif timeframe == "weekly_asc":
+        start_week = today - timedelta(days=today.weekday())
+        end_week = start_week + timedelta(days=6)  # End of the week
+        # Adjusted to consider the full day
+        start_of_week_datetime = datetime.combine(start_week, time.min)
+        end_of_week_datetime = datetime.combine(end_week, time.max)
+        
+        # Debugging lines:
+        print(f"Weekly Range: {start_of_week_datetime} - {end_of_week_datetime}")
+        orders_in_week = Order.objects.filter(created_at__range=(start_of_week_datetime, end_of_week_datetime))
+        print(f"Orders in the week: {orders_in_week.count()}")
+        result = (start_of_week_datetime, end_of_week_datetime)
+        print(f"Returning from weekly_asc: {type(result)} - {result}")
+        return result
+    # ... other timeframes ...
+
+
+    # ... other timeframes ...
+
+# For debugging purposes:
+print(get_filter_date("daily_desc"))  # should print today's date
+print(get_filter_date("weekly_asc"))  # should print start and end dates of the week
+
+
+def get_ordering(timeframe):
+    if '_desc' in timeframe:
+        return '-quantity_sold'
+    elif '_asc' in timeframe:
+        return 'quantity_sold'
+    return None
+
+def get_sales_data_by_filter(timeframe, filter_date, ordering=None, vendor=None):
+    sales_data = SalesRecord.objects.all()
+
+    # If a vendor is provided, filter the SalesRecord by the products associated with that vendor
+    if vendor:
+        vendor_products = Product.objects.filter(vendor=vendor)
+        sales_data = sales_data.filter(product__in=vendor_products)
+
+    # Timeframe and date filtering
+    if 'daily' in timeframe:
+        # Check if the filter_date is a tuple (range) or a single date
+        if isinstance(filter_date, tuple):  # This means we have a range
+            start_date, end_date = filter_date
+            sales_data = sales_data.filter(sale_date__range=(start_date, end_date))
+        else:  # This means we have a single day
+            sales_data = sales_data.filter(sale_date=filter_date)
+
+    # Ordering
+    return sales_data.order_by(ordering or '-quantity_sold')  # Default order added
+
+
+def get_customers_by_user(user, filter_date):
+    try:
+        vendor = Vendor.objects.get(user=user)
+        is_vendor = True
+    except Vendor.DoesNotExist:
+        is_vendor = False
+
+    if is_vendor:
+        vendor_products = Product.objects.filter(vendor=vendor)
+
+        # We'll create a subquery for counting the orders containing the vendor's products for each customer.
+        orders_subquery = Order.objects.filter(
+            customer=OuterRef('pk'),
+            order_items__product__in=vendor_products
+        ).distinct().order_by().values('customer').annotate(order_count=Count('id')).values('order_count')[:1]
+
+        print(Order.objects.filter(order_items__product__in=vendor_products).values('customer').annotate(order_count=Count('id')))
+        customers_query = Customer.objects.annotate(order_count=Coalesce(Subquery(orders_subquery), 0))
+
+        if filter_date:
+            if isinstance(filter_date, tuple):  # If it's a tuple, it means it's a range
+                customers_query = customers_query.filter(order__created_at__range=filter_date)
+            else:  # If it's not a tuple, it's a single date
+                start_of_day = datetime.combine(filter_date, time.min)
+                end_of_day = datetime.combine(filter_date, time.max)
+                customers_query = customers_query.filter(order__created_at__range=(start_of_day, end_of_day))
+
+        print(customers_query.values('id', 'name', 'order_count'))
+        # Only include customers with order_count greater than zero
+        customers = customers_query.filter(order_count__gt=0).distinct()
+    else:
+        customers_query = Customer.objects.all()
+
+        if filter_date:
+            if isinstance(filter_date, tuple):
+                customers_query = customers_query.filter(order__created_at__range=filter_date)
+            else:
+                start_of_day = datetime.combine(filter_date, time.min)
+                end_of_day = datetime.combine(filter_date, time.max)
+                customers_query = customers_query.filter(order__created_at__range=(start_of_day, end_of_day))
+
+        customers = customers_query.annotate(order_count=Count('order'))
+
+    return customers
+
+
+# Authentication
+class UserLoginView(LoginView):
+  template_name = 'accounts/login.html'
+  form_class = LoginForm
+
+def register(request):
+  if request.method == 'POST':
+    form = RegistrationForm(request.POST)
+    if form.is_valid():
+      form.save()
+      print('Account created successfully!')
+      return redirect('login/')
+    else:
+      print("Register failed!")
+  else:
+    form = RegistrationForm()
+
+  context = { 'form': form }
+  return render(request, 'accounts/register.html', context)
+
+def logout_view(request):
+  logout(request)
+  return redirect('login')

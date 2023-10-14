@@ -2,6 +2,7 @@
 
 {% load static %}
 
+
 <html lang="en">
 
 <head>
@@ -90,7 +91,7 @@
     left: 0;
     width: 100%;
     z-index: 1000; /* ensures the nav stays on top of other content */
-    background-color: #6050DC; /* or whatever your nav background color is; this ensures the content behind doesn't show through */
+    background-color: #5E338D; /* or whatever your nav background color is; this ensures the content behind doesn't show through */
     }
 
     body {
@@ -136,6 +137,12 @@
     color: #aaa;
     margin: 0 2px;
     }
+
+    .search-btn {
+    background-color: #FFA439;
+    border-color: #FFA439;
+    }
+
     
     nav ul li a,
     nav ul li a:after,
@@ -144,7 +151,7 @@
     }
 
     nav ul li a:hover {
-    color: #555;
+    color: #FF2D79;
     }
 
     /* SHIFT */
@@ -171,7 +178,7 @@
         height: 1px;
         content: '.';
         color: transparent;
-        background: #aa00ff;
+        background: #FF2D79;
         visibility: hidden;
         opacity: 0;
         z-index: -1;
@@ -207,7 +214,7 @@
         height: 1px;
         content: '.';
         color: transparent;
-        background: #aa00ff;
+        background: #FF2d79;
         visibility: hidden;
         opacity: 0;
         z-index: -1;
@@ -678,9 +685,10 @@
         <div class="col-lg-4 col-md-6">
             <form action="{% url 'search_results' %}" method="get" class="d-flex" role="search">
                 <input type="text" name="query" class="form-control me-2" placeholder="Search products..." aria-label="Search">
-                <button type="submit" class="btn btn-primary search-btn">Search</button>
+                <button type="submit" class="btn search-btn" style="background-color: #FFA439; border-color: #FFA439;">Search</button>
             </form>
         </div>
+        
         
         <div class="header-menu">
 
@@ -730,6 +738,8 @@
         </div>
     </nav>
 
+    
+
     {% if messages %}
 
     {% for message in messages %}
@@ -746,6 +756,129 @@
      {% block content %}
         
      {% endblock content %}
+
+     <!-- Footer -->
+<footer
+class="text-center text-lg-start text-dark"
+style="background-color: #ECEFF1"
+>
+<!-- Section: Social media -->
+<section
+   class="d-flex justify-content-between p-4 text-white"
+   style="background-color: #FF2D79"
+   >
+<!-- Left -->
+<div class="me-5">
+<span>Get connected with us on social networks:</span>
+</div>
+<!-- Left -->
+
+<!-- Right -->
+<div>
+<a href="" class="text-white me-4">
+<i class="bi bi-facebook"></i>
+</a>
+<a href="" class="text-white me-4">
+<i class="bi bi-twitter"></i>
+</a>
+<a href="" class="text-white me-4">
+<i class="bi bi-instagram"></i>
+</a>
+<a href="" class="text-white me-4">
+<i class="bi bi-google"></i>
+</a>
+<a href="" class="text-white me-4">
+<i class="bi bi-tiktok"></i>
+</a>
+<a href="" class="text-white me-4">
+<i class="bi bi-github"></i>
+</a>
+</div>
+<!-- Right -->
+</section>
+<!-- Section: Social media -->
+
+<!-- Section: Links  -->
+<section class="">
+<div class="container text-center text-md-start mt-5">
+<!-- Grid row -->
+<div class="row mt-3">
+<!-- Grid column -->
+<div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+  <!-- Content -->
+  <h6 class="text-uppercase fw-bold">PawSome</h6>
+  <hr
+      class="mb-4 mt-0 d-inline-block mx-auto"
+      style="width: 60px; background-color: #7c4dff; height: 2px"
+      />
+  <p>
+    At Pawsome, we believe every pet deserves the best, and we're here to make sure you find just that.
+  </p>
+</div>
+<!-- Grid column -->
+
+<!-- Grid column -->
+<div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+  <!-- Links -->
+  <h6 class="text-uppercase fw-bold">Products</h6>
+  <hr
+      class="mb-4 mt-0 d-inline-block mx-auto"
+      style="width: 60px; background-color: #7c4dff; height: 2px"
+      />
+  <p>
+    <a href="#!" class="text-dark">Dog Products</a>
+  </p>
+  <p>
+    <a href="#!" class="text-dark">Cat Products</a>
+  </p>
+  <p>
+    <a href="#!" class="text-dark">New Paw Parent</a>
+  </p>
+  <p>
+    <a href="#!" class="text-dark">Shop By Brand</a>
+  </p>
+</div>
+<!-- Grid column -->
+
+<!-- Grid column -->
+<div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+  <!-- Links -->
+  <h6 class="text-uppercase fw-bold">Useful links</h6>
+  <hr
+      class="mb-4 mt-0 d-inline-block mx-auto"
+      style="width: 60px; background-color: #7c4dff; height: 2px"
+      />
+  <p>
+    <a href="#!" class="text-dark">Your Account</a>
+  </p>
+  <p>
+    <a href="#!" class="text-dark">Help</a>
+  </p>
+</div>
+<!-- Grid column -->
+
+<!-- Grid column -->
+<div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+  <!-- Links -->
+  <h6 class="text-uppercase fw-bold">Contact</h6>
+  <hr
+      class="mb-4 mt-0 d-inline-block mx-auto"
+      style="width: 60px; background-color: #7c4dff; height: 2px"
+      />
+  <p><i class="bi bi-pin-map-fill"></i> Kathmandu, Nepal</p>
+  <p><i class="bi bi-envelope-at-fill"></i> info@pawsome.com</p>
+  <p><i class="bi bi-telephone-inbound-fill"></i> + 01 234 567 88</p>
+  <p><i class="bi bi-telephone-inbound-fill"></i>+ 01 234 567 89</p>
+</div>
+<!-- Grid column -->
+</div>
+<!-- Grid row -->
+</div>
+</section>
+<!-- Section: Links  -->
+
+</footer>
+<!-- Footer -->
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
    <script src="{% static 'js/script.js' %}"></script>
